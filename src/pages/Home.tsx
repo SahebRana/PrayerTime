@@ -1,3 +1,4 @@
+import { useState } from "preact/hooks";
 export function Home() {
   const title: string = "Prayer Time";
 
