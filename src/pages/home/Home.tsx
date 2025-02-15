@@ -1,24 +1,14 @@
 import * as React from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
-
-type Inputs = {
-  example: string;
-  exampleRequired: string;
-};
 
 interface IHomePageProps {}
 
 const HomePage: React.FunctionComponent<IHomePageProps> = () => {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm<Inputs>();
-
-  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
-  
-  return <>Home page</>;
+  return (
+    <div className="flex flex-col gap-4">
+      <h1 className="text-2xl font-bold">Home</h1>
+      {/* Add your home page content here */}
+    </div>
+  );
 };
 
 export default HomePage;
