@@ -1,18 +1,18 @@
 import * as React from "react";
-import { Bell, BellOff } from "lucide-react";
+// import { Bell, BellOff } from "lucide-react";
 import { IPrayerCardProps } from "../../types/types";
 
 const PrayerCard: React.FunctionComponent<IPrayerCardProps> = ({
   prayer,
   register,
   completedPrayers,
-  notifications
+//   notifications
 }) => {
   return (
     <>
       <div
         key={prayer.name}
-        className="flex items-center justify-between p-3 bg-[#DFF2E0] rounded-lg"
+        className="flex items-center justify-between p-3 bg-[#DFF2E0] focus:bg-[#CACDF1] rounded-lg"
       >
         <div className="flex items-center gap-3">
           <input
@@ -33,11 +33,13 @@ const PrayerCard: React.FunctionComponent<IPrayerCardProps> = ({
           >
             {completedPrayers?.includes(prayer.name) && "✓"}
           </label>
-          <span className="font-medium">{prayer.name}</span>
+          <span className="font-semibold">{prayer.name}</span>
         </div>
+
         <div className="flex items-center gap-3">
-          <span className="text-gray-600">{prayer.time}</span>
-          <input
+          <span className="font-semibold">{prayer.time}</span>
+
+          {/* <input
             type="checkbox"
             {...register("notifications")}
             value={prayer.name}
@@ -53,7 +55,8 @@ const PrayerCard: React.FunctionComponent<IPrayerCardProps> = ({
             ) : (
               <BellOff className="w-5 h-5 text-gray-400" />
             )}
-          </label>
+          </label> */}
+
         </div>
       </div>
     </>
