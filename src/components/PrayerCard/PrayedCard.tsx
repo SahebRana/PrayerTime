@@ -41,8 +41,8 @@ const PrayerCard: React.FunctionComponent<IPrayerCardProps> = ({
           className={`w-6 h-6 rounded-full flex items-center justify-center
             ${
               completedPrayers?.includes(prayer.name)
-                ? "bg-blue-600 text-white"
-                : "border-2 border-gray-300"
+                ? "text-black border-2 border-black"
+                : "border-2 border-black"
             }`}
         >
           {completedPrayers?.includes(prayer.name) && "✓"}
