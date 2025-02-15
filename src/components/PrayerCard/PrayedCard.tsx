@@ -22,7 +22,11 @@ const PrayerCard: React.FunctionComponent<IPrayerCardProps> = ({
   return (
     <div
       onClick={handleCardClick}
-      className="flex items-center justify-between p-3 bg-[#DFF2E0] hover:bg-[#CACDF1] rounded-lg cursor-pointer"
+      className={`flex items-center justify-between p-3 rounded-lg cursor-pointer ${
+        completedPrayers?.includes(prayer.name)
+          ? "bg-[#CACDF1]"
+          : "bg-[#DFF2E0] hover:bg-[#CACDF1]"
+      }`}
     >
       <div className="flex items-center gap-3">
         <input
