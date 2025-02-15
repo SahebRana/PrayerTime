@@ -1,6 +1,7 @@
 import { useState } from "preact/hooks";
 import { useForm } from "react-hook-form";
 import { Bell, BellOff } from "lucide-react";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 interface PrayerTime {
   name: string;
@@ -88,11 +89,24 @@ const PrayerTimesPage = () => {
   };
 
   return (
-    <div className="flex flex-col bg-white">
+    <div className="flex flex-col bg-[#F5F5F5] rounded-lg">
       <main className="flex-1 px-4">
         <form onChange={handleSubmit(onSubmit)}>
-          <div className="mb-4">
-            <h2 className="text-lg font-medium mb-2">Today</h2>
+          <div className="my-4 flex items-center justify-between">
+            <FaChevronLeft color="#343434" />
+
+            <div className="text-lg font-semibold mb-2 text-center">
+              <p className={"text-[#343434] text-sm"}>Today</p>
+              <p className={"text-xs text-[#757575]"}>
+                Tokyo, 15 Feb 2025, 16 Shaban 1446
+              </p>
+            </div>
+
+            <FaChevronRight color="#343434" />
+          </div>
+
+          <div className="overview bg-white rounded-lg mb-4 py-10">
+
           </div>
 
           <div className="space-y-4">
