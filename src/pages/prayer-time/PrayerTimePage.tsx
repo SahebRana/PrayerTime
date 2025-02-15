@@ -2,19 +2,7 @@ import { useState } from "preact/hooks";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import PrayerCard from "../../components/PrayerCard/PrayedCard";
 import { useForm } from "react-hook-form";
-
-interface PrayerTime {
-  name: string;
-  time: string;
-  icon: string;
-  completed: boolean;
-  notificationEnabled: boolean;
-}
-
-interface PrayerFormData {
-  completedPrayers: string[];
-  notifications: string[];
-}
+import { PrayerFormData, PrayerTime } from "../../types/types";
 
 const PrayerTimesPage = () => {
   const [prayerTimes] = useState<PrayerTime[]>([

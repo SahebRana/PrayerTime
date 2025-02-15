@@ -9,3 +9,16 @@ export interface IPrayerCardProps {
     completedPrayers: string[];
     notifications: string[];
 }
+
+export interface PrayerTime {
+  name: string;
+  time: string;
+  icon: string;
+  completed: boolean;
+  notificationEnabled: boolean;
+}
+
+export interface PrayerFormData {
+  completedPrayers: string[];
+  notifications: string[];
+}
