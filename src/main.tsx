@@ -14,6 +14,10 @@ const router = createBrowserRouter([
     element: <RootElement />,
     children: [
       {
+        index: true,
+        element: <PrayerTimesPage />,
+      },
+      {
         path: "home",
         element: <HomePage />,
       },
@@ -21,17 +25,14 @@ const router = createBrowserRouter([
         path: "prayer-time",
         element: <PrayerTimesPage />,
       },
-
       {
         path: "quran",
         element: <QuranPage />,
       },
-
       {
         path: "duas",
         element: <DuasPage />,
       },
-
       {
         path: "more",
         element: <MorePage />,
