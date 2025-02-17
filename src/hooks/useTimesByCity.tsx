@@ -2,6 +2,7 @@ import axios from "axios";
 import * as React from "react";
 import { baseURL } from "../constants/constants";
 import { PrayerTime } from "../types/types";
+import { formatTime } from "../util/formatTime";
 
 interface TimingsResponse {
   data: {
@@ -32,49 +33,49 @@ const useTimesByCity = () => {
         const formattedTimes: PrayerTime[] = [
           {
             name: "Fajr",
-            time: timings.Fajr,
+            time: formatTime(timings.Fajr),
             icon: "🌙",
             completed: false,
             notificationEnabled: true,
           },
           {
             name: "Sunrise",
-            time: timings.Sunrise,
+            time: formatTime(timings.Sunrise),
             icon: "☀️",
             completed: false,
             notificationEnabled: false,
           },
           {
             name: "Dhuhr",
-            time: timings.Dhuhr,
+            time: formatTime(timings.Dhuhr),
             icon: "☀️",
             completed: false,
             notificationEnabled: true,
           },
           {
             name: "Asr",
-            time: timings.Asr,
+            time: formatTime(timings.Asr),
             icon: "☀️",
             completed: false,
             notificationEnabled: true,
           },
           {
             name: "Maghrib",
-            time: timings.Maghrib,
+            time: formatTime(timings.Maghrib),
             icon: "🌅",
             completed: false,
             notificationEnabled: true,
           },
           {
             name: "Isha",
-            time: timings.Isha,
+            time: formatTime(timings.Isha),
             icon: "🌙",
             completed: false,
             notificationEnabled: true,
           },
           {
             name: "Qiyam",
-            time: "01:10 AM",
+            time: "1:10 AM",
             icon: "🌙",
             completed: false,
             notificationEnabled: false,
