@@ -54,7 +54,7 @@ const PrayerCard: React.FunctionComponent<IPrayerCardProps> = ({
           ? "bg-[#DFF2E0]"
           : completedPrayers?.includes(prayer.name)
           ? "bg-[#CACDF1]"
-          : "bg-[#DFF2E0] hover:bg-[#CACDF1]"
+          : "bg-green-secondary hover:bg-[#CACDF1]"
       }`}
     >
       <div className="flex items-center gap-3">
