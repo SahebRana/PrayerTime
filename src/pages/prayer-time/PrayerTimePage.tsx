@@ -1,61 +1,65 @@
-import { useState } from "preact/hooks";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import PrayerCard from "../../components/PrayerCard/PrayedCard";
 import { useForm } from "react-hook-form";
-import { PrayerFormData, PrayerTime } from "../../types/types";
+import { PrayerFormData } from "../../types/types";
+import useTimesByCity from "../../hooks/useTimesByCity";
 
 const PrayerTimesPage = () => {
-  const [prayerTimes] = useState<PrayerTime[]>([
-    {
-      name: "Fajr",
-      time: "05:05 AM",
-      icon: "🌙",
-      completed: true,
-      notificationEnabled: true,
-    },
-    {
-      name: "Sunrise",
-      time: "06:31 AM",
-      icon: "☀️",
-      completed: false,
-      notificationEnabled: false,
-    },
-    {
-      name: "Dhuhr",
-      time: "11:55 AM",
-      icon: "☀️",
-      completed: true,
-      notificationEnabled: true,
-    },
-    {
-      name: "Asr",
-      time: "02:56 PM",
-      icon: "☀️",
-      completed: false,
-      notificationEnabled: true,
-    },
-    {
-      name: "Maghrib",
-      time: "05:20 PM",
-      icon: "🌅",
-      completed: false,
-      notificationEnabled: true,
-    },
-    {
-      name: "Isha",
-      time: "06:41 PM",
-      icon: "🌙",
-      completed: false,
-      notificationEnabled: true,
-    },
-    {
-      name: "Qiyam",
-      time: "01:10 AM",
-      icon: "🌙",
-      completed: false,
-      notificationEnabled: false,
-    },
-  ]);
+  const {prayerTimes} = useTimesByCity();
+
+  console.log("prayerTimesByCity", prayerTimes);
+
+  // const [prayerTimes] = useState<PrayerTime[]>([
+  //   {
+  //     name: "Fajr",
+  //     time: "05:05 AM",
+  //     icon: "🌙",
+  //     completed: true,
+  //     notificationEnabled: true,
+  //   },
+  //   {
+  //     name: "Sunrise",
+  //     time: "06:31 AM",
+  //     icon: "☀️",
+  //     completed: false,
+  //     notificationEnabled: false,
+  //   },
+  //   {
+  //     name: "Dhuhr",
+  //     time: "11:55 AM",
+  //     icon: "☀️",
+  //     completed: true,
+  //     notificationEnabled: true,
+  //   },
+  //   {
+  //     name: "Asr",
+  //     time: "02:56 PM",
+  //     icon: "☀️",
+  //     completed: false,
+  //     notificationEnabled: true,
+  //   },
+  //   {
+  //     name: "Maghrib",
+  //     time: "05:20 PM",
+  //     icon: "🌅",
+  //     completed: false,
+  //     notificationEnabled: true,
+  //   },
+  //   {
+  //     name: "Isha",
+  //     time: "06:41 PM",
+  //     icon: "🌙",
+  //     completed: false,
+  //     notificationEnabled: true,
+  //   },
+  //   {
+  //     name: "Qiyam",
+  //     time: "01:10 AM",
+  //     icon: "🌙",
+  //     completed: false,
+  //     notificationEnabled: false,
+  //   },
+  // ]);
 
   const { register, handleSubmit, watch } = useForm<PrayerFormData>({
     defaultValues: {

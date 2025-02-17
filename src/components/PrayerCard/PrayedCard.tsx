@@ -52,9 +52,7 @@ const PrayerCard: React.FunctionComponent<IPrayerCardProps> = ({
       className={`flex items-center justify-between p-3 rounded-lg cursor-pointer ${
         prayer.name === "Sunrise" || prayer.name === "Qiyam"
           ? "bg-[#DFF2E0]"
-          : completedPrayers?.includes(prayer.name)
-          ? "bg-[#CACDF1]"
-          : "bg-green-secondary hover:bg-[#CACDF1]"
+          : "bg-[#DFF2E0]"
       }`}
     >
       <div className="flex items-center gap-3">
