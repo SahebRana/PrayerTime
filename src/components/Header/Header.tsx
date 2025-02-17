@@ -8,7 +8,7 @@ const Header: React.FunctionComponent<IHeaderProps> = () => {
   return (
     <>
       {/* Header */}
-      <header className="p-4 flex justify-between items-center">
+      <header className="p-4 flex justify-between items-center text-black-primary">
         <h1 className="text-xl font-semibold">Prayer Times</h1>
 
         <div className="flex gap-4 items-center">
