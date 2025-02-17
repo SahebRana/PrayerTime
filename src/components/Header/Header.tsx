@@ -1,5 +1,6 @@
-import { Calendar, Share2 } from "lucide-react";
 import * as React from "react";
+import { FaRegCalendarAlt } from "react-icons/fa";
+import { SlOptionsVertical } from "react-icons/sl";
 
 interface IHeaderProps {}
 
@@ -7,11 +8,12 @@ const Header: React.FunctionComponent<IHeaderProps> = () => {
   return (
     <>
       {/* Header */}
-      <header className="p-4 border-b flex justify-between items-center">
+      <header className="p-4 flex justify-between items-center">
         <h1 className="text-xl font-semibold">Prayer Times</h1>
-        <div className="flex gap-4">
-          <Share2 className="w-6 h-6" />
-          <Calendar className="w-6 h-6" />
+
+        <div className="flex gap-4 items-center">
+          <FaRegCalendarAlt size={24} />
+          <SlOptionsVertical size={20} />
         </div>
       </header>
     </>
