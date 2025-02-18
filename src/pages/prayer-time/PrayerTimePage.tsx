@@ -5,7 +5,7 @@ import { PrayerFormData } from "../../types/types";
 import useTimesByCity from "../../hooks/useTimesByCity";
 
 const PrayerTimesPage = () => {
-  const {prayerTimes} = useTimesByCity();
+  const { prayerTimes, loading } = useTimesByCity();
 
   console.log("prayerTimesByCity", prayerTimes);
 
@@ -101,18 +101,21 @@ const PrayerTimesPage = () => {
             {/* overview here */}
           </div>
 
-          <div className="space-y-4">
-            {/* card here */}
-            {prayerTimes.map((prayer) => (
-              <PrayerCard
-                key={prayer.name}
-                prayer={prayer}
-                register={register}
-                completedPrayers={completedPrayers}
-                notifications={notifications}
-              />
-            ))}
-          </div>
+          {loading ? (
+            <div className="flex items-center justify-center h-screen">Loading...</div>
+          ) : (
+            <div className="prayer-list space-y-3">
+              {prayerTimes.map((prayer) => (
+                <PrayerCard
+                  key={prayer.name}
+                  prayer={prayer}
+                  register={register}
+                  completedPrayers={completedPrayers}
+                  notifications={notifications}
+                />
+              ))}
+            </div>
+          )}
         </form>
       </main>
     </div>

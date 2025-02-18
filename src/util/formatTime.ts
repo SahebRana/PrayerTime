@@ -1,9 +1,10 @@
-// receive time in any format and return it in 12-hour format (e.g. 05:05 AM)
+import dayjs from 'dayjs';
+
+// Convert time string to 12-hour format (e.g. 05:05 AM)
 export const formatTime = (time: string): string => {
-  const [hours, minutes] = time.split(":");
-  const hour = parseInt(hours);
-  const minute = parseInt(minutes);
-  const ampm = hour >= 12 ? "PM" : "AM";
-  const formattedHour = hour % 12 === 0 ? 12 : hour % 12;
-  return `${formattedHour}:${minute < 10 ? `0${minute}` : minute} ${ampm}`;
+  // Parse the time string (assuming 24-hour format input)
+  const parsedTime = dayjs(`2024-01-01 ${time}`);
+  
+  // Format to 12-hour time with AM/PM
+  return parsedTime.format('h:mm A');
 };
