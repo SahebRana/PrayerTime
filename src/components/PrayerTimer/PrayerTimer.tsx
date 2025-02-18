@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { Clock } from "lucide-react";
 import { PrayerTime } from "../../types/types";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
+import { FaRegCircle } from "react-icons/fa";
 
 // Initialize the duration plugin
 dayjs.extend(duration);
@@ -96,7 +96,7 @@ const PrayerTimer: React.FC<PrayerTimerProps> = ({ prayerTimes }) => {
 
       <div className="flex flex-col items-center">
         <div className="relative w-18 h-18 flex items-center justify-center">
-          <Clock className="w-16 h-16 text-gray-200" />
+          <FaRegCircle size={64} color="#E5E7EB" />
           
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span className="text-sm font-medium">{getTimeRemaining()}</span>
