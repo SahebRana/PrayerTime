@@ -48,7 +48,7 @@ npm run build
 ```
 
 ## 📜 License
-This project is licensed under the [MIT License](https://github.com/SahebRana/PrayerTime/LICENSE.md).
+This project is licensed under the [MIT License](https://github.com/SahebRana/PrayerTime?tab=MIT-1-ov-file#readme).
 
 
 
