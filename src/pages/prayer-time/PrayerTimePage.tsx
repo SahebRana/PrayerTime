@@ -3,6 +3,7 @@ import PrayerCard from "../../components/PrayerCard/PrayedCard";
 import { useForm } from "react-hook-form";
 import { PrayerFormData } from "../../types/types";
 import useTimes from "../../hooks/useTimes";
+import PrayerTimer from "../../components/PrayerTimer/PrayerTimer";
 
 const PrayerTimesPage = () => {
   const { prayerTimes, loading } = useTimes();
@@ -97,12 +98,15 @@ const PrayerTimesPage = () => {
             <FaChevronRight color="#343434" />
           </div>
 
-          <div className="overview bg-white rounded-lg mb-4 py-10">
+          <div className="overview mb-4">
             {/* overview here */}
+            <PrayerTimer prayerTimes={prayerTimes} />
           </div>
 
           {loading ? (
-            <div className="flex items-center justify-center h-screen">Loading...</div>
+            <div className="flex items-center justify-center h-screen">
+              Loading...
+            </div>
           ) : (
             <div className="prayer-list space-y-3">
               {prayerTimes.map((prayer) => (

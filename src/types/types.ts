@@ -1,13 +1,11 @@
 import { UseFormRegister } from "react-hook-form";
+import { Dayjs } from "dayjs";
 
 export interface IPrayerCardProps {
-  prayer: {
-    name: string;
-    time: string;
-  };
-  register: UseFormRegister<any>;
-    completedPrayers: string[];
-    notifications: string[];
+  prayer: PrayerTime;
+  register: UseFormRegister<PrayerFormData>;
+  completedPrayers: string[];
+  notifications: string[];
 }
 
 export interface PrayerTime {
@@ -16,6 +14,7 @@ export interface PrayerTime {
   icon: string;
   completed: boolean;
   notificationEnabled: boolean;
+  datetime?: Dayjs;
 }
 
 export interface PrayerFormData {
