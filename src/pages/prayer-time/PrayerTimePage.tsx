@@ -2,10 +2,10 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import PrayerCard from "../../components/PrayerCard/PrayedCard";
 import { useForm } from "react-hook-form";
 import { PrayerFormData } from "../../types/types";
-import useTimesByCity from "../../hooks/useTimesByCity";
+import useTimes from "../../hooks/useTimes";
 
 const PrayerTimesPage = () => {
-  const { prayerTimes, loading } = useTimesByCity();
+  const { prayerTimes, loading } = useTimes();
 
   console.log("prayerTimesByCity", prayerTimes);
 

@@ -17,7 +17,9 @@ interface TimingsResponse {
   };
 }
 
-const useTimesByCity = () => {
+const useTimes = (
+  urlParams = "timingsByCity/15-02-2025?city=tokyo&country=JP"
+) => {
   const [prayerTimes, setPrayerTimes] = React.useState<PrayerTime[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
@@ -26,7 +28,7 @@ const useTimesByCity = () => {
     const fetchPrayerTimes = async () => {
       try {
         const response = await axios.get<TimingsResponse>(
-          `${baseURL}/timingsByCity/15-02-2025?city=tokyo&country=JP`
+          `${baseURL}/${urlParams}`
         );
 
         const timings = response.data.data.timings;
@@ -96,4 +98,4 @@ const useTimesByCity = () => {
   return { prayerTimes, loading, error };
 };
 
-export default useTimesByCity;
+export default useTimes;
