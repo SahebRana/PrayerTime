@@ -72,7 +72,7 @@ const PrayerTimer: React.FC<PrayerTimerProps> = ({ prayerTimes }) => {
 
   // Calculate time remaining
   const getTimeRemaining = () => {
-    if (!nextPrayer) return "00:00";
+    if (!nextPrayer || !nextPrayer.datetime) return "00:00";
 
     const diff = nextPrayer.datetime.diff(dayjs());
     const duration = dayjs.duration(diff);
@@ -88,25 +88,26 @@ const PrayerTimer: React.FC<PrayerTimerProps> = ({ prayerTimes }) => {
   if (!nextPrayer) return null;
 
   return (
-    <div className="flex items-center justify-between w-full max-w-md p-4 bg-white rounded-lg shadow">
+    <div className="flex items-center justify-between w-full max-w-md py-2 px-4 bg-white rounded-lg shadow">
       <div className="flex flex-col items-center">
-        <span className="text-sm text-gray-500">Now</span>
         <span className="text-lg font-semibold">{formatTime(currentTime)}</span>
+        <span className="text-sm text-gray-500">Now</span>
       </div>
 
       <div className="flex flex-col items-center">
-        <div className="relative w-16 h-16 flex items-center justify-center">
+        <div className="relative w-18 h-18 flex items-center justify-center">
           <Clock className="w-16 h-16 text-gray-200" />
-          <div className="absolute inset-0 flex items-center justify-center">
+          
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span className="text-sm font-medium">{getTimeRemaining()}</span>
+            <span className="text-xs text-gray-500 mt-1">After</span>
           </div>
         </div>
-        <span className="text-xs text-gray-500 mt-1">Until</span>
       </div>
 
       <div className="flex flex-col items-center">
-        <span className="text-sm text-gray-500">{nextPrayer.name}</span>
         <span className="text-lg font-semibold">{nextPrayer.time}</span>
+        <span className="text-sm text-gray-500">{nextPrayer.name}</span>
       </div>
     </div>
   );
