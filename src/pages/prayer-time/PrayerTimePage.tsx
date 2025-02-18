@@ -1,85 +1,42 @@
-import { useState } from "preact/hooks";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import PrayerCard from "../../components/PrayerCard/PrayedCard";
 import { useForm } from "react-hook-form";
-import { PrayerFormData, PrayerTime } from "../../types/types";
+import { PrayerFormData } from "../../types/types";
+import useTimes from "../../hooks/useTimes";
+import PrayerTimer from "../../components/PrayerTimer/PrayerTimer";
+import { useEffect } from "react";
 
 const PrayerTimesPage = () => {
-  const [prayerTimes] = useState<PrayerTime[]>([
-    {
-      name: "Fajr",
-      time: "05:05 AM",
-      icon: "🌙",
-      completed: true,
-      notificationEnabled: true,
-    },
-    {
-      name: "Sunrise",
-      time: "06:31 AM",
-      icon: "☀️",
-      completed: false,
-      notificationEnabled: false,
-    },
-    {
-      name: "Dhuhr",
-      time: "11:55 AM",
-      icon: "☀️",
-      completed: true,
-      notificationEnabled: true,
-    },
-    {
-      name: "Asr",
-      time: "02:56 PM",
-      icon: "☀️",
-      completed: false,
-      notificationEnabled: true,
-    },
-    {
-      name: "Maghrib",
-      time: "05:20 PM",
-      icon: "🌅",
-      completed: false,
-      notificationEnabled: true,
-    },
-    {
-      name: "Isha",
-      time: "06:41 PM",
-      icon: "🌙",
-      completed: false,
-      notificationEnabled: true,
-    },
-    {
-      name: "Qiyam",
-      time: "01:10 AM",
-      icon: "🌙",
-      completed: false,
-      notificationEnabled: false,
-    },
-  ]);
+  const { prayerTimes, loading } = useTimes();
 
   const { register, handleSubmit, watch } = useForm<PrayerFormData>({
     defaultValues: {
       completedPrayers: prayerTimes
-        .filter((prayer) => prayer.completed)
-        .map((prayer) => prayer.name),
+        ?.filter((prayer) => prayer.completed)
+        .map((prayer) => prayer.name) || [],
       notifications: prayerTimes
-        .filter((prayer) => prayer.notificationEnabled)
-        .map((prayer) => prayer.name),
+        ?.filter((prayer) => prayer.notificationEnabled)
+        .map((prayer) => prayer.name) || [],
     },
   });
 
   const completedPrayers = watch("completedPrayers");
   const notifications = watch("notifications");
 
+  // Watch for changes and submit immediately
+  useEffect(() => {
+    handleSubmit(onSubmit)();
+  }, [completedPrayers, notifications]);
+
   const onSubmit = (data: PrayerFormData) => {
-    console.log(data);
+    console.log("Form submitted:", data);
     // Handle form submission here
   };
 
   return (
     <div className="flex flex-col bg-[#F5F5F5] rounded-lg">
-      <main className="flex-1 px-4">
-        <form onChange={handleSubmit(onSubmit)}>
+      <main className="flex-1 px-4 pb-4">
+        <form>
           <div className="my-4 flex items-center justify-between">
             <FaChevronLeft color="#343434" />
 
@@ -93,22 +50,27 @@ const PrayerTimesPage = () => {
             <FaChevronRight color="#343434" />
           </div>
 
-          <div className="overview bg-white rounded-lg mb-4 py-10">
-            {/* overview here */}
+          <div className="overview mb-4">
+            <PrayerTimer prayerTimes={prayerTimes} />
           </div>
 
-          <div className="space-y-4">
-            {/* card here */}
-            {prayerTimes.map((prayer) => (
-              <PrayerCard
-                key={prayer.name}
-                prayer={prayer}
-                register={register}
-                completedPrayers={completedPrayers}
-                notifications={notifications}
-              />
-            ))}
-          </div>
+          {loading ? (
+            <div className="flex items-center justify-center h-screen">
+              Loading...
+            </div>
+          ) : (
+            <div className="prayer-list space-y-3">
+              {prayerTimes.map((prayer) => (
+                <PrayerCard
+                  key={prayer.name}
+                  prayer={prayer}
+                  register={register}
+                  completedPrayers={completedPrayers}
+                  notifications={notifications}
+                />
+              ))}
+            </div>
+          )}
         </form>
       </main>
     </div>

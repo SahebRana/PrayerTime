@@ -1,6 +1,7 @@
 import * as React from "react";
 import { IPrayerCardProps } from "../../types/types";
-import { Sun, Moon } from "lucide-react"; // Add this import
+import { Sun, Moon } from "lucide-react";
+import useNextPrayerStore from "../../store/useNextPrayerStore";
 
 const PrayerCard: React.FunctionComponent<IPrayerCardProps> = ({
   prayer,
@@ -8,6 +9,14 @@ const PrayerCard: React.FunctionComponent<IPrayerCardProps> = ({
   completedPrayers,
 }) => {
   const { onChange, ...rest } = register("completedPrayers");
+  const { nextPrayerTime } = useNextPrayerStore();
+
+  const getBackgroundColor = () => {
+    if (nextPrayerTime?.name === prayer.name) {
+      return "bg-[#B6E3FF]";
+    }
+    return "bg-[#DFF2E0]";
+  };
 
   const handleCardClick = () => {
     if (prayer.name !== "Sunrise" && prayer.name !== "Qiyam") {
@@ -49,13 +58,7 @@ const PrayerCard: React.FunctionComponent<IPrayerCardProps> = ({
   return (
     <div
       onClick={handleCardClick}
-      className={`flex items-center justify-between p-3 rounded-lg cursor-pointer ${
-        prayer.name === "Sunrise" || prayer.name === "Qiyam"
-          ? "bg-[#DFF2E0]"
-          : completedPrayers?.includes(prayer.name)
-          ? "bg-[#CACDF1]"
-          : "bg-green-secondary hover:bg-[#CACDF1]"
-      }`}
+      className={`flex items-center justify-between p-3 rounded-lg cursor-pointer ${getBackgroundColor()}`}
     >
       <div className="flex items-center gap-3">
         {prayer.name !== "Sunrise" && prayer.name !== "Qiyam" && (
