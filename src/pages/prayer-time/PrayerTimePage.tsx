@@ -4,35 +4,39 @@ import { useForm } from "react-hook-form";
 import { PrayerFormData } from "../../types/types";
 import useTimes from "../../hooks/useTimes";
 import PrayerTimer from "../../components/PrayerTimer/PrayerTimer";
+import { useEffect } from "react";
 
 const PrayerTimesPage = () => {
   const { prayerTimes, loading } = useTimes();
 
-  console.log("prayerTimesByCity", prayerTimes);
-
   const { register, handleSubmit, watch } = useForm<PrayerFormData>({
     defaultValues: {
       completedPrayers: prayerTimes
-        .filter((prayer) => prayer.completed)
-        .map((prayer) => prayer.name),
+        ?.filter((prayer) => prayer.completed)
+        .map((prayer) => prayer.name) || [],
       notifications: prayerTimes
-        .filter((prayer) => prayer.notificationEnabled)
-        .map((prayer) => prayer.name),
+        ?.filter((prayer) => prayer.notificationEnabled)
+        .map((prayer) => prayer.name) || [],
     },
   });
 
   const completedPrayers = watch("completedPrayers");
   const notifications = watch("notifications");
 
+  // Watch for changes and submit immediately
+  useEffect(() => {
+    handleSubmit(onSubmit)();
+  }, [completedPrayers, notifications]);
+
   const onSubmit = (data: PrayerFormData) => {
-    console.log(data);
+    console.log("Form submitted:", data);
     // Handle form submission here
   };
 
   return (
     <div className="flex flex-col bg-[#F5F5F5] rounded-lg">
       <main className="flex-1 px-4 pb-4">
-        <form onChange={handleSubmit(onSubmit)}>
+        <form>
           <div className="my-4 flex items-center justify-between">
             <FaChevronLeft color="#343434" />
 
@@ -47,7 +51,6 @@ const PrayerTimesPage = () => {
           </div>
 
           <div className="overview mb-4">
-            {/* overview here */}
             <PrayerTimer prayerTimes={prayerTimes} />
           </div>
 

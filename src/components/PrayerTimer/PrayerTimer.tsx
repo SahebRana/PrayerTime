@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { PrayerTime } from "../../types/types";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
-import { FaRegCircle } from "react-icons/fa";
 import useNextPrayerStore from "../../store/useNextPrayerStore";
 
 // Initialize the duration plugin
@@ -93,24 +92,24 @@ const PrayerTimer: React.FC<PrayerTimerProps> = ({ prayerTimes }) => {
 
   return (
     <div className="flex items-center justify-between w-full max-w-md py-2 px-4 bg-white rounded-lg shadow">
-      <div className="flex flex-col items-center">
-        <span className="text-lg font-semibold">{formatTime(currentTime)}</span>
+      <div className="flex flex-col items-center leading-0">
+        <span className="text-lg font-semibold leading-4">{formatTime(currentTime)}</span>
         <span className="text-sm text-gray-500">Now</span>
       </div>
 
       <div className="flex flex-col items-center">
         <div className="relative w-18 h-18 flex items-center justify-center">
-          <FaRegCircle size={64} color="#E5E7EB" />
-
+          <div className="w-18 h-18 aspect-square rounded-full border-3 border-border-color"></div>
+        
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-sm font-medium">{getTimeRemaining()}</span>
+            <span className="text-sm font-medium leading-4">{getTimeRemaining()}</span>
             <span className="text-xs text-gray-500 mt-1">After</span>
           </div>
         </div>
       </div>
 
       <div className="flex flex-col items-center">
-        <span className="text-lg font-semibold">{nextPrayer.time}</span>
+        <span className="text-lg font-semibold leading-4">{nextPrayer.time}</span>
         <span className="text-sm text-gray-500">{nextPrayer.name}</span>
       </div>
     </div>
