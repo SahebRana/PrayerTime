@@ -10,58 +10,6 @@ const PrayerTimesPage = () => {
 
   console.log("prayerTimesByCity", prayerTimes);
 
-  // const [prayerTimes] = useState<PrayerTime[]>([
-  //   {
-  //     name: "Fajr",
-  //     time: "05:05 AM",
-  //     icon: "🌙",
-  //     completed: true,
-  //     notificationEnabled: true,
-  //   },
-  //   {
-  //     name: "Sunrise",
-  //     time: "06:31 AM",
-  //     icon: "☀️",
-  //     completed: false,
-  //     notificationEnabled: false,
-  //   },
-  //   {
-  //     name: "Dhuhr",
-  //     time: "11:55 AM",
-  //     icon: "☀️",
-  //     completed: true,
-  //     notificationEnabled: true,
-  //   },
-  //   {
-  //     name: "Asr",
-  //     time: "02:56 PM",
-  //     icon: "☀️",
-  //     completed: false,
-  //     notificationEnabled: true,
-  //   },
-  //   {
-  //     name: "Maghrib",
-  //     time: "05:20 PM",
-  //     icon: "🌅",
-  //     completed: false,
-  //     notificationEnabled: true,
-  //   },
-  //   {
-  //     name: "Isha",
-  //     time: "06:41 PM",
-  //     icon: "🌙",
-  //     completed: false,
-  //     notificationEnabled: true,
-  //   },
-  //   {
-  //     name: "Qiyam",
-  //     time: "01:10 AM",
-  //     icon: "🌙",
-  //     completed: false,
-  //     notificationEnabled: false,
-  //   },
-  // ]);
-
   const { register, handleSubmit, watch } = useForm<PrayerFormData>({
     defaultValues: {
       completedPrayers: prayerTimes
@@ -83,7 +31,7 @@ const PrayerTimesPage = () => {
 
   return (
     <div className="flex flex-col bg-[#F5F5F5] rounded-lg">
-      <main className="flex-1 px-4">
+      <main className="flex-1 px-4 pb-4">
         <form onChange={handleSubmit(onSubmit)}>
           <div className="my-4 flex items-center justify-between">
             <FaChevronLeft color="#343434" />

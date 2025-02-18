@@ -75,13 +75,6 @@ const useTimes = (
             completed: false,
             notificationEnabled: true,
           },
-          {
-            name: "Qiyam",
-            time: "1:10 AM",
-            icon: "🌙",
-            completed: false,
-            notificationEnabled: false,
-          },
         ];
 
         setPrayerTimes(formattedTimes);
