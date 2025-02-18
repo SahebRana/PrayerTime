@@ -3,6 +3,7 @@ import { PrayerTime } from "../../types/types";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import { FaRegCircle } from "react-icons/fa";
+import useNextPrayerStore from "../../store/useNextPrayerStore";
 
 // Initialize the duration plugin
 dayjs.extend(duration);
@@ -14,6 +15,7 @@ interface PrayerTimerProps {
 const PrayerTimer: React.FC<PrayerTimerProps> = ({ prayerTimes }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [nextPrayer, setNextPrayer] = useState<PrayerTime | null>(null);
+  const { setNextPrayerTime } = useNextPrayerStore();
 
   // Update current time every second
   useEffect(() => {
@@ -54,8 +56,10 @@ const PrayerTimer: React.FC<PrayerTimerProps> = ({ prayerTimes }) => {
           ),
         };
         setNextPrayer(firstPrayer);
+        setNextPrayerTime(firstPrayer);
       } else {
         setNextPrayer(next || null);
+        setNextPrayerTime(next || null);
       }
     };
 
@@ -97,7 +101,7 @@ const PrayerTimer: React.FC<PrayerTimerProps> = ({ prayerTimes }) => {
       <div className="flex flex-col items-center">
         <div className="relative w-18 h-18 flex items-center justify-center">
           <FaRegCircle size={64} color="#E5E7EB" />
-          
+
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span className="text-sm font-medium">{getTimeRemaining()}</span>
             <span className="text-xs text-gray-500 mt-1">After</span>
