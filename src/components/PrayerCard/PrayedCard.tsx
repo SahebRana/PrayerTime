@@ -13,9 +13,9 @@ const PrayerCard: React.FunctionComponent<IPrayerCardProps> = ({
 
   const getBackgroundColor = () => {
     if (nextPrayerTime?.name === prayer.name) {
-      return "bg-[#B6E3FF]";
+      return "bg-blue-secondary";
     }
-    return "bg-[#DFF2E0]";
+    return "bg-green-secondary";
   };
 
   const handleCardClick = () => {
@@ -45,8 +45,8 @@ const PrayerCard: React.FunctionComponent<IPrayerCardProps> = ({
             className={`w-6 h-6 rounded-full flex items-center justify-center
               ${
                 completedPrayers?.includes(prayer.name)
-                  ? "text-black border-2 border-black"
-                  : "border-2 border-black"
+                  ? "text-black-primary border-2 border-black-primary"
+                  : "border-2 border-black-primary"
               }`}
           >
             {completedPrayers?.includes(prayer.name) && "✓"}
