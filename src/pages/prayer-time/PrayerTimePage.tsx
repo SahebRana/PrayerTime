@@ -4,10 +4,15 @@ import { useForm } from "react-hook-form";
 import { PrayerFormData } from "../../types/types";
 import useTimes from "../../hooks/useTimes";
 import PrayerTimer from "../../components/PrayerTimer/PrayerTimer";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import dayjs from "dayjs";
 
 const PrayerTimesPage = () => {
-  const { prayerTimes, loading } = useTimes();
+  const [currentDate, setCurrentDate] = useState(dayjs());
+  const [city, setCity] = useState('tokyo');
+  const [country, setCountry] = useState('JP');
+  const [dayName, setDayName] = useState('Today');
+  const { prayerTimes, hijriDate, loading } = useTimes(currentDate, { city, country });
 
   const { register, handleSubmit, watch } = useForm<PrayerFormData>({
     defaultValues: {
@@ -33,21 +38,45 @@ const PrayerTimesPage = () => {
     // Handle form submission here
   };
 
+  const addDay = () => {
+    setCurrentDate(currentDate.add(1, 'day'));
+  }
+
+  const subtractDay = () => {
+    setCurrentDate(currentDate.subtract(1, 'day'));
+  }
+
+  useEffect(() => {
+    const today = dayjs();
+    if (today.isSame(currentDate, 'd')) {
+      setDayName('Today');
+    }
+    else if (today.isSame(currentDate.add(1, 'day'), 'd')) {
+      setDayName('Yesterday');
+    }
+    else if (today.isSame(currentDate.subtract(1, 'day'), 'd')) {
+      setDayName('Tomorrow');
+    }
+    else {
+      setDayName(currentDate.format('dddd'));
+    }
+  }, [currentDate])
+
   return (
     <div className="flex flex-col bg-light rounded-lg">
       <main className="flex-1 px-4 pb-4">
-        <form>
+        <div>
           <div className="my-4 flex items-center justify-between">
-            <FaChevronLeft color="#343434" />
+            <button onClick={subtractDay}><FaChevronLeft color="#1f2328" /></button>
 
             <div className="text-lg font-semibold mb-2 text-center">
-              <p className={"text-black-primary text-sm"}>Today</p>
-              <p className={"text-xs text-black-secondary"}>
-                Tokyo, 15 Feb 2025, 16 Shaban 1446
+              <p className={"text-black-primary text-sm"}>{dayName}</p>
+              <p className={"text-xs text-black-secondary capitalize"}>
+                {city}, {currentDate.format('DD MMM YYYY')}, {hijriDate}
               </p>
             </div>
 
-            <FaChevronRight color="#343434" />
+            <button onClick={addDay}><FaChevronRight color="#1f2328" /></button>
           </div>
 
           <div className="overview mb-4">
@@ -71,7 +100,7 @@ const PrayerTimesPage = () => {
               ))}
             </div>
           )}
-        </form>
+        </div>
       </main>
     </div>
   );

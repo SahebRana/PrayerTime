@@ -19,3 +19,8 @@
   --color-light: #faf8fa;
   --color-primary: #FFFFFF;
 }
+
+a,
+button {
+  @apply cursor-pointer;
+}

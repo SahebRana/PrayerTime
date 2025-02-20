@@ -1,7 +1,7 @@
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import RootElement from "./Root.tsx";
-import "./index.css";
+// import "./index.css";
 import HomePage from "./pages/home/Home.tsx";
 import PrayerTimesPage from "./pages/prayer-time/PrayerTimePage.tsx";
 import QuranPage from "./pages/quran/Quran.tsx";
