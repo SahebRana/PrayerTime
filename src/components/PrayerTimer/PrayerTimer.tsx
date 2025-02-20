@@ -94,7 +94,7 @@ const PrayerTimer: React.FC<PrayerTimerProps> = ({ prayerTimes }) => {
     <div className="flex items-center justify-between w-full max-w-md py-2 px-4 bg-white rounded-lg shadow">
       <div className="flex flex-col items-center leading-0">
         <span className="text-lg font-semibold leading-4">{formatTime(currentTime)}</span>
-        <span className="text-sm text-gray-500">Now</span>
+        <span className="text-sm text-black-secondary">Now</span>
       </div>
 
       <div className="flex flex-col items-center">
@@ -103,14 +103,14 @@ const PrayerTimer: React.FC<PrayerTimerProps> = ({ prayerTimes }) => {
         
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span className="text-sm font-medium leading-4">{getTimeRemaining()}</span>
-            <span className="text-xs text-gray-500 mt-1">After</span>
+            <span className="text-xs text-black-secondary mt-1">After</span>
           </div>
         </div>
       </div>
 
       <div className="flex flex-col items-center">
         <span className="text-lg font-semibold leading-4">{nextPrayer.time}</span>
-        <span className="text-sm text-gray-500">{nextPrayer.name}</span>
+        <span className="text-sm text-black-secondary">{nextPrayer.name}</span>
       </div>
     </div>
   );
