@@ -37,7 +37,7 @@ const PrayerTimer: React.FC<PrayerTimerProps> = ({ prayerTimes }) => {
         ...prayer,
         datetime: dayjs(
           `${now.format("YYYY-MM-DD")} ${prayer.time}`,
-          "YYYY-MM-DD h:mm A"
+          "YYYY-MM-DD hh:mm A"
         ),
       }));
 
@@ -51,7 +51,7 @@ const PrayerTimer: React.FC<PrayerTimerProps> = ({ prayerTimes }) => {
           ...todaysPrayers[0],
           datetime: dayjs(
             `${tomorrow.format("YYYY-MM-DD")} ${todaysPrayers[0].time}`,
-            "YYYY-MM-DD h:mm A"
+            "YYYY-MM-DD hh:mm A"
           ),
         };
         setNextPrayer(firstPrayer);
@@ -70,7 +70,7 @@ const PrayerTimer: React.FC<PrayerTimerProps> = ({ prayerTimes }) => {
 
   // Format time to HH:MM AM/PM
   const formatTime = (date: Date) => {
-    return dayjs(date).format("h:mm A");
+    return dayjs(date).format("hh:mm A");
   };
 
   // Calculate time remaining
@@ -91,23 +91,15 @@ const PrayerTimer: React.FC<PrayerTimerProps> = ({ prayerTimes }) => {
   if (!nextPrayer) return null;
 
   return (
-    <div className="flex items-center justify-between w-full max-w-md py-2 px-4 bg-white rounded-lg shadow">
+    <div className="flex items-center justify-between w-full max-w-md py-2 px-4 bg-primary rounded-lg shadow">
       <div className="flex flex-col items-center leading-0">
         <span className="text-lg font-semibold leading-4">{formatTime(currentTime)}</span>
         <span className="text-sm text-black-secondary">Now</span>
       </div>
-
-      <div className="flex flex-col items-center">
-        <div className="relative w-18 h-18 flex items-center justify-center">
-          <div className="w-18 h-18 aspect-square rounded-full border-3 border-border-color"></div>
-        
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-sm font-medium leading-4">{getTimeRemaining()}</span>
-            <span className="text-xs text-black-secondary mt-1">After</span>
-          </div>
-        </div>
+      <div className="flex flex-col items-center justify-center w-18 h-18 aspect-square rounded-full border-3 border-border-color">
+        <span className="text-base font-medium leading-4">{getTimeRemaining()}</span>
+        <span className="text-xs text-black-secondary">After</span>
       </div>
-
       <div className="flex flex-col items-center">
         <span className="text-lg font-semibold leading-4">{nextPrayer.time}</span>
         <span className="text-sm text-black-secondary">{nextPrayer.name}</span>
