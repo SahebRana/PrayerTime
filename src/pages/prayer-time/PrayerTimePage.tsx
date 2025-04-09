@@ -9,8 +9,11 @@ import dayjs from "dayjs";
 
 const PrayerTimesPage = () => {
   const [currentDate, setCurrentDate] = useState(dayjs());
-  const [city, setCity] = useState('tokyo');
-  const [country, setCountry] = useState('JP');
+  // const [city, setCity] = useState('tokyo');
+  const [city] = useState('tokyo');
+  // const [country, setCountry] = useState('JP');
+  const [country] = useState('JP');
+
   const [dayName, setDayName] = useState('Today');
   const { prayerTimes, hijriDate, loading } = useTimes(currentDate, { city, country });
 
