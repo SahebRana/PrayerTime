@@ -1,12 +1,12 @@
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import RootElement from "./Root.tsx";
-// import "./index.css";
 import HomePage from "./pages/home/Home.tsx";
 import PrayerTimesPage from "./pages/prayer-time/PrayerTimePage.tsx";
 import QuranPage from "./pages/quran/Quran.tsx";
 import DuasPage from "./pages/duas/Duas.tsx";
 import MorePage from "./pages/more/More.tsx";
+import "./index.css";
 
 const router = createBrowserRouter([
   {
