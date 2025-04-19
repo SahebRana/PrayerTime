@@ -7,6 +7,7 @@ import QuranPage from "./pages/quran/Quran.tsx";
 import DuasPage from "./pages/duas/Duas.tsx";
 import MorePage from "./pages/more/More.tsx";
 import "./index.css";
+import PrayerTimeCalenderPage from "./pages/calender/Calender.tsx";
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
       {
         path: "more",
         element: <MorePage />,
+      },
+      {
+        path: "prayer-calender",
+        element: <PrayerTimeCalenderPage />,
       },
     ],
   },
