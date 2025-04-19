@@ -14,6 +14,8 @@ const PrayerTimeCalenderPage = () => {
   const [dayName, setDayName] = useState("Today");
   const { hijriDate } = useTimes(currentDate, { city, country });
 
+  console.log(dayName, hijriDate);
+
   const handleDateSelect = (date: Date) => {
     setCurrentDate(dayjs(date));
     // Determine day name based on selected date
@@ -31,15 +33,8 @@ const PrayerTimeCalenderPage = () => {
 
   return (
     <div className="flex flex-col bg-light rounded-lg">
-      <main className="flex-1 px-4 pb-4">
+      <main className="flex-1 px-4 pb-4 pt-2">
         <div>
-          <div className="text-lg font-semibold mb-2 text-center">
-            <p className={"text-black-primary text-sm"}>{dayName}</p>
-            <p className={"text-xs text-black-secondary capitalize"}>
-              {city}, {currentDate.format("DD MMM YYYY")}, {hijriDate}
-            </p>
-          </div>
-
           <div className="mb-8">
             <PrayerCalendar
               city={city}
