@@ -147,12 +147,28 @@ const PrayerCalendar = ({
   };
 
   const isToday = (date: string) => {
-    const [year, month, day] = date.split("-").map(Number);
-    return (
+    // Check the actual format of the date string
+
+    // Try parsing manually based on actual format
+    let day, month, year;
+
+    if (date.match(/^\d{4}-\d{2}-\d{2}$/)) {
+      // Format is YYYY-MM-DD
+      [year, month, day] = date.split("-").map(Number);
+    } else if (date.match(/^\d{2}-\d{2}-\d{4}$/)) {
+      // Format is DD-MM-YYYY
+      [day, month, year] = date.split("-").map(Number);
+    } else {
+      console.error("Unknown date format:", date);
+      return false;
+    }
+
+    const result =
       day === today.date() &&
       month === today.month() + 1 &&
-      year === today.year()
-    );
+      year === today.year();
+
+    return result;
   };
 
   const formatDateCell = (date: PrayerTimeData["date"]) => {
@@ -229,32 +245,30 @@ const PrayerCalendar = ({
       )}
 
       <div className="overflow-x-auto border border-border-color rounded-lg">
-        <table className="w-full border-collapse">
+        <table className="w-full border-collapse text-[9px]">
           <thead>
             <tr>
-              <th className="border-b border-r border-border-color bg-light p-2 text-sm text-black-secondary">
+              <th className="border-b border-r border-border-color bg-light p-2 text-[9px] text-black-secondary">
                 Date
               </th>
-              <th className="border-b border-r border-border-color bg-light p-2 text-sm text-black-secondary">
-                Fair/
-                <br />
-                Sohhour
+              <th className="border-b border-r border-border-color bg-light p-2 text-[9px] text-black-secondary">
+                Fajr/ Sohhour
               </th>
-              <th className="border-b border-r border-border-color bg-light p-2 text-sm text-black-secondary">
+              <th className="border-b border-r border-border-color bg-light p-2 text-[9px] text-black-secondary">
                 Sunrise
               </th>
-              <th className="border-b border-r border-border-color bg-light p-2 text-sm text-black-secondary">
+              <th className="border-b border-r border-border-color bg-light p-2 text-[9px] text-black-secondary">
                 Dhuhr
               </th>
-              <th className="border-b border-r border-border-color bg-light p-2 text-sm text-black-secondary">
+              <th className="border-b border-r border-border-color bg-light p-2 text-[9px] text-black-secondary">
                 Asr
               </th>
-              <th className="border-b border-r border-border-color bg-light p-2 text-sm text-black-secondary">
+              <th className="border-b border-r border-border-color bg-light p-2 text-[9px] text-black-secondary">
                 Maghrib/
                 <br />
                 Iftar
               </th>
-              <th className="border-b border-border-color bg-light p-2 text-sm text-black-secondary">
+              <th className="border-b border-border-color bg-light p-2 text-[9px] text-black-secondary">
                 Isha
               </th>
             </tr>
@@ -266,24 +280,22 @@ const PrayerCalendar = ({
               return (
                 <tr
                   key={day.date.gregorian.date}
-                  className={`${isTodayRow ? "bg-red-100" : "bg-primary"} 
+                  className={`${isTodayRow ? "bg-red-50" : "bg-white"} 
                             hover:bg-gray-100 cursor-pointer`}
                   onClick={() =>
                     onDateSelect?.(new Date(day.date.gregorian.date))
                   }
                 >
                   <td
-                    className={`border-r border-b border-border-color p-2 text-sm ${
-                      isTodayRow
-                        ? "text-red-primary font-bold"
-                        : "text-black-primary"
+                    className={`border-r border-b border-border-color p-2 text-xs ${
+                      isTodayRow ? "text-red-primary" : "text-gray-800"
                     }`}
                   >
                     {formatDateCell(day.date)}
                   </td>
                   <td
-                    className={`border-r border-b border-border-color p-2 text-sm ${
-                      isTodayRow ? "text-red-primary font-bold" : ""
+                    className={`border-r border-b border-border-color p-2 text-xs ${
+                      isTodayRow ? "text-red-primary" : "text-gray-800"
                     }`}
                   >
                     {day.timings.Fajr !== "N/A"
@@ -291,8 +303,8 @@ const PrayerCalendar = ({
                       : "N/A"}
                   </td>
                   <td
-                    className={`border-r border-b border-border-color p-2 text-sm ${
-                      isTodayRow ? "text-red-primary font-bold" : ""
+                    className={`border-r border-b border-border-color p-2 text-xs ${
+                      isTodayRow ? "text-red-primary" : "text-gray-800"
                     }`}
                   >
                     {day.timings.Sunrise !== "N/A"
@@ -300,8 +312,8 @@ const PrayerCalendar = ({
                       : "N/A"}
                   </td>
                   <td
-                    className={`border-r border-b border-border-color p-2 text-sm ${
-                      isTodayRow ? "text-red-primary font-bold" : ""
+                    className={`border-r border-b border-border-color p-2 text-xs ${
+                      isTodayRow ? "text-red-primary" : "text-gray-800"
                     }`}
                   >
                     {day.timings.Dhuhr !== "N/A"
@@ -309,8 +321,8 @@ const PrayerCalendar = ({
                       : "N/A"}
                   </td>
                   <td
-                    className={`border-r border-b border-border-color p-2 text-sm ${
-                      isTodayRow ? "text-red-primary font-bold" : ""
+                    className={`border-r border-b border-border-color p-2 text-xs ${
+                      isTodayRow ? "text-red-primary" : "text-gray-800"
                     }`}
                   >
                     {day.timings.Asr !== "N/A"
@@ -318,8 +330,8 @@ const PrayerCalendar = ({
                       : "N/A"}
                   </td>
                   <td
-                    className={`border-r border-b border-border-color p-2 text-sm ${
-                      isTodayRow ? "text-red-primary font-bold" : ""
+                    className={`border-r border-b border-border-color p-2 text-xs ${
+                      isTodayRow ? "text-red-primary" : "text-gray-800"
                     }`}
                   >
                     {day.timings.Maghrib !== "N/A"
@@ -327,8 +339,8 @@ const PrayerCalendar = ({
                       : "N/A"}
                   </td>
                   <td
-                    className={`border-b border-border-color p-2 text-sm ${
-                      isTodayRow ? "text-red-primary font-bold" : ""
+                    className={`border-b border-border-color p-2 text-xs ${
+                      isTodayRow ? "text-red-primary" : "text-gray-800"
                     }`}
                   >
                     {day.timings.Isha !== "N/A"

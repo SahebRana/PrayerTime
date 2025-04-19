@@ -1,31 +1,31 @@
-import { useState } from 'preact/hooks';
+import { useState } from "preact/hooks";
 import useTimes from "../../hooks/useTimes";
 import dayjs from "dayjs";
-import PrayerCalendar from './PrayerCalender';
+import PrayerCalendar from "./PrayerCalender";
 
 const PrayerTimeCalenderPage = () => {
   const [currentDate, setCurrentDate] = useState(dayjs());
-  const [city, setCity] = useState('Tokyo');
-  const [country, setCountry] = useState('Japan');
+  //   const [city, setCity] = useState('Tokyo');
+  const [city] = useState("Tokyo");
 
-  const [dayName, setDayName] = useState('Today');
-  const { prayerTimes, hijriDate, loading } = useTimes(currentDate, { city, country });
+  //   const [country, setCountry] = useState('Japan');
+  const [country] = useState("Japan");
+
+  const [dayName, setDayName] = useState("Today");
+  const { hijriDate } = useTimes(currentDate, { city, country });
 
   const handleDateSelect = (date: Date) => {
     setCurrentDate(dayjs(date));
     // Determine day name based on selected date
     const today = dayjs();
-    if (today.isSame(date, 'd')) {
-      setDayName('Today');
-    }
-    else if (today.add(1, 'day').isSame(date, 'd')) {
-      setDayName('Tomorrow');
-    }
-    else if (today.subtract(1, 'day').isSame(date, 'd')) {
-      setDayName('Yesterday');
-    }
-    else {
-      setDayName(dayjs(date).format('dddd'));
+    if (today.isSame(date, "d")) {
+      setDayName("Today");
+    } else if (today.add(1, "day").isSame(date, "d")) {
+      setDayName("Tomorrow");
+    } else if (today.subtract(1, "day").isSame(date, "d")) {
+      setDayName("Yesterday");
+    } else {
+      setDayName(dayjs(date).format("dddd"));
     }
   };
 
@@ -36,15 +36,15 @@ const PrayerTimeCalenderPage = () => {
           <div className="text-lg font-semibold mb-2 text-center">
             <p className={"text-black-primary text-sm"}>{dayName}</p>
             <p className={"text-xs text-black-secondary capitalize"}>
-              {city}, {currentDate.format('DD MMM YYYY')}, {hijriDate}
+              {city}, {currentDate.format("DD MMM YYYY")}, {hijriDate}
             </p>
           </div>
 
           <div className="mb-8">
-            <PrayerCalendar 
+            <PrayerCalendar
               city={city}
               country={country}
-              onDateSelect={handleDateSelect} 
+              onDateSelect={handleDateSelect}
             />
           </div>
         </div>
