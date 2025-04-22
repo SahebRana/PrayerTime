@@ -237,14 +237,14 @@ const PrayerCalendar = ({
 
         {/* English month name and year here */}
         <div className="text-center">
-          <h2 className=" font-semibold text-black-primary">
+          <h2 className="font-semibold text-black-primary text-sm">
             {getMonthName(currentMonth)} {currentYear}
           </h2>
 
           {/* hijri month name and year here */}
           <h4>
             {prayerData.length > 0 && prayerData[0].date.hijri && (
-              <span className="text-sm font-medium text-gray-600">
+              <span className="text-[9px] font-medium text-gray-600">
                 {prayerData[0].date.hijri.month?.en}{" "}
                 {prayerData[0].date.hijri.year}
               </span>
@@ -267,31 +267,38 @@ const PrayerCalendar = ({
         <table className="w-full border-collapse text-[9px]">
           <thead>
             <tr>
-              <th className="border-b border-r border-border-color bg-blue-light p-2 text-[9px] text-black-secondary">
+              <th className="border-b border-r border-border-color bg-blue-light text-[9px] text-black-secondary">
                 Date
               </th>
-              <th className="border-b border-r border-border-color bg-blue-secondary p-2 text-[9px] text-black-secondary">
+
+              <th className="border-b border-r border-border-color bg-blue-secondary text-[9px] text-black-secondary">
                 Fajr/ Sohhour
               </th>
-              <th className="border-b border-r border-border-color bg-blue-light p-2 text-[9px] text-black-secondary">
+
+              <th className="border-b border-r border-border-color bg-blue-light text-[9px] text-black-secondary">
                 Sunrise
               </th>
-              <th className="border-b border-r border-border-color bg-blue-secondary p-2 text-[9px] text-black-secondary">
+
+              <th className="border-b border-r border-border-color bg-blue-secondary text-[9px] text-black-secondary">
                 Dhuhr
               </th>
-              <th className="border-b border-r border-border-color bg-blue-light p-2 text-[9px] text-black-secondary">
+
+              <th className="border-b border-r border-border-color bg-blue-light text-[9px] text-black-secondary">
                 Asr
               </th>
-              <th className="border-b border-r border-border-color bg-blue-secondary p-2 text-[9px] text-black-secondary">
+
+              <th className="border-b border-r border-border-color bg-blue-secondary text-[9px] text-black-secondary">
                 Maghrib/
                 <br />
                 Iftar
               </th>
-              <th className="border-b border-border-color bg-blue-light p-2 text-[9px] text-black-secondary">
+
+              <th className="border-b border-border-color bg-blue-light text-[9px] text-black-secondary">
                 Isha
               </th>
             </tr>
           </thead>
+
           <tbody>
             {displayData.map((day) => {
               const isTodayRow = isToday(day.date.gregorian.date);
@@ -306,14 +313,15 @@ const PrayerCalendar = ({
                   }
                 >
                   <td
-                    className={`border-r border-b border-border-color p-2 text-xs ${
+                    className={`border-r border-b border-border-color text-[9px] text-center ${
                       isTodayRow ? "text-red-primary" : "text-gray-800"
                     } bg-blue-light`}
                   >
                     {formatDateCell(day.date)}
                   </td>
+
                   <td
-                    className={`border-r border-b border-border-color p-2 text-xs ${
+                    className={`border-r border-b border-border-color text-[9px] text-center ${
                       isTodayRow ? "text-red-primary" : "text-gray-800"
                     } bg-blue-secondary`}
                   >
@@ -322,7 +330,7 @@ const PrayerCalendar = ({
                       : "N/A"}
                   </td>
                   <td
-                    className={`border-r border-b border-border-color p-2 text-xs ${
+                    className={`border-r border-b border-border-color text-[9px] text-center ${
                       isTodayRow ? "text-red-primary" : "text-gray-800"
                     } bg-blue-light`}
                   >
@@ -331,7 +339,7 @@ const PrayerCalendar = ({
                       : "N/A"}
                   </td>
                   <td
-                    className={`border-r border-b border-border-color p-2 text-xs ${
+                    className={`border-r border-b border-border-color text-[9px] text-center ${
                       isTodayRow ? "text-red-primary" : "text-gray-800"
                     } bg-blue-secondary`}
                   >
@@ -340,7 +348,7 @@ const PrayerCalendar = ({
                       : "N/A"}
                   </td>
                   <td
-                    className={`border-r border-b border-border-color p-2 text-xs ${
+                    className={`border-r border-b border-border-color text-[9px] text-center ${
                       isTodayRow ? "text-red-primary" : "text-gray-800"
                     } bg-blue-light`}
                   >
@@ -349,7 +357,7 @@ const PrayerCalendar = ({
                       : "N/A"}
                   </td>
                   <td
-                    className={`border-r border-b border-border-color p-2 text-xs ${
+                    className={`border-r border-b border-border-color text-[9px] text-center ${
                       isTodayRow ? "text-red-primary" : "text-gray-800"
                     } bg-blue-secondary`}
                   >
@@ -358,7 +366,7 @@ const PrayerCalendar = ({
                       : "N/A"}
                   </td>
                   <td
-                    className={`border-b border-border-color p-2 text-xs ${
+                    className={`border-b border-border-color text-[9px] text-center ${
                       isTodayRow ? "text-red-primary" : "text-gray-800"
                     } bg-blue-light`}
                   >

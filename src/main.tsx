@@ -7,7 +7,7 @@ import QuranPage from "./pages/quran/Quran.tsx";
 import DuasPage from "./pages/duas/Duas.tsx";
 import MorePage from "./pages/more/More.tsx";
 import "./index.css";
-import PrayerTimeCalenderPage from "./pages/calender/Calender.tsx";
+import PrayerTimeCalenderPage from "./pages/calender/Calendar.tsx";
 
 const router = createBrowserRouter([
   {

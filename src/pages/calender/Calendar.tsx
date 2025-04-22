@@ -35,7 +35,7 @@ const PrayerTimeCalenderPage = () => {
     <div className="flex flex-col bg-light rounded-lg">
       <main className="flex-1 px-4 pb-4 pt-2">
         <div>
-          <div className="mb-8">
+          <div className="">
             <PrayerCalendar
               city={city}
               country={country}
