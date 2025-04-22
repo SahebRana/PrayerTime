@@ -237,7 +237,7 @@ const PrayerCalendar = ({
 
         {/* English month name and year here */}
         <div className="text-center">
-          <h2 className="font-semibold text-black-primary text-sm">
+          <h2 className="font-semibold text-black-primary text-sm mt-4">
             {getMonthName(currentMonth)} {currentYear}
           </h2>
 
@@ -272,7 +272,9 @@ const PrayerCalendar = ({
               </th>
 
               <th className="border-b border-r border-border-color bg-blue-secondary text-[9px] text-black-secondary">
-                Fajr/ Sohhour
+                Fajr/
+                <br />
+                Sohhour
               </th>
 
               <th className="border-b border-r border-border-color bg-blue-light text-[9px] text-black-secondary">
