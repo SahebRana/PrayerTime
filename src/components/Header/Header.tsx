@@ -1,11 +1,28 @@
 import * as React from "react";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { SlOptionsVertical } from "react-icons/sl";
-import { Link } from "react-router";
+import { BsCalendarEvent } from "react-icons/bs";
+import { Link, useLocation } from "react-router";
+import useHeaderStore from "../../store/useHeaderStore";
 
 interface IHeaderProps {}
 
 const Header: React.FunctionComponent<IHeaderProps> = () => {
+  const { isCalender, setCalender } = useHeaderStore();
+  const location = useLocation();
+  const pathname = location.pathname;
+
+  const isCalenderPage = pathname === "/prayer-calender";
+  const isPrayerPage = pathname === "/";
+
+  React.useEffect(() => {
+    if (isCalenderPage) {
+      setCalender(true);
+    } else if (isPrayerPage) {
+      setCalender(false);
+    }
+  }, [pathname, setCalender, isCalenderPage, isPrayerPage]);
+
   return (
     <>
       {/* Header */}
@@ -15,9 +32,18 @@ const Header: React.FunctionComponent<IHeaderProps> = () => {
         </Link>
 
         <div className="flex gap-4 items-center">
-          <a href="/prayer-calender">
-            <FaRegCalendarAlt size={24} />
-          </a>
+          {!isCalender && (
+            <Link to={"/prayer-calender"}>
+              <FaRegCalendarAlt size={24} />
+            </Link>
+          )}
+
+          {isCalender && (
+            <Link to={"/"}>
+              <BsCalendarEvent size={22} />
+            </Link>
+          )}
+
           <SlOptionsVertical size={20} />
         </div>
       </header>
