@@ -33,7 +33,7 @@ const PrayerTimeCalenderPage = () => {
 
   return (
     <div className="flex flex-col bg-light rounded-lg">
-      <main className="flex-1 px-4 pb-4 pt-2">
+      <main className="flex-1 px-4 pb-4">
         <div>
           <div className="">
             <PrayerCalendar
