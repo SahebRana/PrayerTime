@@ -220,14 +220,6 @@ const PrayerCalendar = ({
   const displayData =
     prayerData.length > 0 ? prayerData : getDummyCalendarDays();
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        Loading prayer times...
-      </div>
-    );
-  }
-
   return (
     <div className="w-full max-w-4xl mx-auto">
       <div className="flex justify-between items-center mb-4">
@@ -263,125 +255,131 @@ const PrayerCalendar = ({
         </div>
       )}
 
-      <div className="overflow-x-auto border border-border-color rounded-lg">
-        <table className="w-full border-collapse text-[9px]">
-          <thead>
-            <tr>
-              <th className="border-b border-r border-border-color bg-blue-light text-[9px] text-black-secondary">
-                Date
-              </th>
+      {loading ? (
+        <div className="flex items-center justify-center h-screen">
+          Loading...
+        </div>
+      ) : (
+        <div className="border border-border-color rounded-lg">
+          <table className="w-full border-collapse text-[9px]">
+            <thead>
+              <tr>
+                <th className="border-b border-r border-border-color bg-blue-light text-[9px] text-black-secondary">
+                  Date
+                </th>
 
-              <th className="border-b border-r border-border-color bg-blue-secondary text-[9px] text-black-secondary">
-                Fajr/
-                <br />
-                Sohhour
-              </th>
+                <th className="border-b border-r border-border-color bg-blue-secondary text-[9px] text-black-secondary">
+                  Fajr/
+                  <br />
+                  Sohhour
+                </th>
 
-              <th className="border-b border-r border-border-color bg-blue-light text-[9px] text-black-secondary">
-                Sunrise
-              </th>
+                <th className="border-b border-r border-border-color bg-blue-light text-[9px] text-black-secondary">
+                  Sunrise
+                </th>
 
-              <th className="border-b border-r border-border-color bg-blue-secondary text-[9px] text-black-secondary">
-                Dhuhr
-              </th>
+                <th className="border-b border-r border-border-color bg-blue-secondary text-[9px] text-black-secondary">
+                  Dhuhr
+                </th>
 
-              <th className="border-b border-r border-border-color bg-blue-light text-[9px] text-black-secondary">
-                Asr
-              </th>
+                <th className="border-b border-r border-border-color bg-blue-light text-[9px] text-black-secondary">
+                  Asr
+                </th>
 
-              <th className="border-b border-r border-border-color bg-blue-secondary text-[9px] text-black-secondary">
-                Maghrib/
-                <br />
-                Iftar
-              </th>
+                <th className="border-b border-r border-border-color bg-blue-secondary text-[9px] text-black-secondary">
+                  Maghrib/
+                  <br />
+                  Iftar
+                </th>
 
-              <th className="border-b border-border-color bg-blue-light text-[9px] text-black-secondary">
-                Isha
-              </th>
-            </tr>
-          </thead>
+                <th className="border-b border-border-color bg-blue-light text-[9px] text-black-secondary">
+                  Isha
+                </th>
+              </tr>
+            </thead>
 
-          <tbody>
-            {displayData.map((day) => {
-              const isTodayRow = isToday(day.date.gregorian.date);
+            <tbody>
+              {displayData.map((day) => {
+                const isTodayRow = isToday(day.date.gregorian.date);
 
-              return (
-                <tr
-                  key={day.date.gregorian.date}
-                  className={`${isTodayRow ? "bg-red-50" : ""} 
+                return (
+                  <tr
+                    key={day.date.gregorian.date}
+                    className={`${isTodayRow ? "bg-red-50" : ""} 
                             hover:bg-gray-100 cursor-pointer`}
-                  onClick={() =>
-                    onDateSelect?.(new Date(day.date.gregorian.date))
-                  }
-                >
-                  <td
-                    className={`border-r border-b border-border-color text-[9px] text-center ${
-                      isTodayRow ? "text-red-primary" : "text-gray-800"
-                    } bg-blue-light`}
+                    onClick={() =>
+                      onDateSelect?.(new Date(day.date.gregorian.date))
+                    }
                   >
-                    {formatDateCell(day.date)}
-                  </td>
+                    <td
+                      className={`border-r border-b border-border-color text-[9px] text-center ${
+                        isTodayRow ? "text-red-primary" : "text-gray-800"
+                      } bg-blue-light`}
+                    >
+                      {formatDateCell(day.date)}
+                    </td>
 
-                  <td
-                    className={`border-r border-b border-border-color text-[9px] text-center ${
-                      isTodayRow ? "text-red-primary" : "text-gray-800"
-                    } bg-blue-secondary`}
-                  >
-                    {day.timings.Fajr !== "N/A"
-                      ? formatTime(day.timings.Fajr)
-                      : "N/A"}
-                  </td>
-                  <td
-                    className={`border-r border-b border-border-color text-[9px] text-center ${
-                      isTodayRow ? "text-red-primary" : "text-gray-800"
-                    } bg-blue-light`}
-                  >
-                    {day.timings.Sunrise !== "N/A"
-                      ? formatTime(day.timings.Sunrise)
-                      : "N/A"}
-                  </td>
-                  <td
-                    className={`border-r border-b border-border-color text-[9px] text-center ${
-                      isTodayRow ? "text-red-primary" : "text-gray-800"
-                    } bg-blue-secondary`}
-                  >
-                    {day.timings.Dhuhr !== "N/A"
-                      ? formatTime(day.timings.Dhuhr)
-                      : "N/A"}
-                  </td>
-                  <td
-                    className={`border-r border-b border-border-color text-[9px] text-center ${
-                      isTodayRow ? "text-red-primary" : "text-gray-800"
-                    } bg-blue-light`}
-                  >
-                    {day.timings.Asr !== "N/A"
-                      ? formatTime(day.timings.Asr)
-                      : "N/A"}
-                  </td>
-                  <td
-                    className={`border-r border-b border-border-color text-[9px] text-center ${
-                      isTodayRow ? "text-red-primary" : "text-gray-800"
-                    } bg-blue-secondary`}
-                  >
-                    {day.timings.Maghrib !== "N/A"
-                      ? formatTime(day.timings.Maghrib)
-                      : "N/A"}
-                  </td>
-                  <td
-                    className={`border-b border-border-color text-[9px] text-center ${
-                      isTodayRow ? "text-red-primary" : "text-gray-800"
-                    } bg-blue-light`}
-                  >
-                    {day.timings.Isha !== "N/A"
-                      ? formatTime(day.timings.Isha)
-                      : "N/A"}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+                    <td
+                      className={`border-r border-b border-border-color text-[9px] text-center ${
+                        isTodayRow ? "text-red-primary" : "text-gray-800"
+                      } bg-blue-secondary`}
+                    >
+                      {day.timings.Fajr !== "N/A"
+                        ? formatTime(day.timings.Fajr)
+                        : "N/A"}
+                    </td>
+                    <td
+                      className={`border-r border-b border-border-color text-[9px] text-center ${
+                        isTodayRow ? "text-red-primary" : "text-gray-800"
+                      } bg-blue-light`}
+                    >
+                      {day.timings.Sunrise !== "N/A"
+                        ? formatTime(day.timings.Sunrise)
+                        : "N/A"}
+                    </td>
+                    <td
+                      className={`border-r border-b border-border-color text-[9px] text-center ${
+                        isTodayRow ? "text-red-primary" : "text-gray-800"
+                      } bg-blue-secondary`}
+                    >
+                      {day.timings.Dhuhr !== "N/A"
+                        ? formatTime(day.timings.Dhuhr)
+                        : "N/A"}
+                    </td>
+                    <td
+                      className={`border-r border-b border-border-color text-[9px] text-center ${
+                        isTodayRow ? "text-red-primary" : "text-gray-800"
+                      } bg-blue-light`}
+                    >
+                      {day.timings.Asr !== "N/A"
+                        ? formatTime(day.timings.Asr)
+                        : "N/A"}
+                    </td>
+                    <td
+                      className={`border-r border-b border-border-color text-[9px] text-center ${
+                        isTodayRow ? "text-red-primary" : "text-gray-800"
+                      } bg-blue-secondary`}
+                    >
+                      {day.timings.Maghrib !== "N/A"
+                        ? formatTime(day.timings.Maghrib)
+                        : "N/A"}
+                    </td>
+                    <td
+                      className={`border-b border-border-color text-[9px] text-center ${
+                        isTodayRow ? "text-red-primary" : "text-gray-800"
+                      } bg-blue-light`}
+                    >
+                      {day.timings.Isha !== "N/A"
+                        ? formatTime(day.timings.Isha)
+                        : "N/A"}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };
