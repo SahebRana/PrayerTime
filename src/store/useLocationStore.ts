@@ -1,5 +1,9 @@
 import { create } from "zustand";
-import { Country as AppCountry, City as AppCity, LocationState } from "../types/types";
+import {
+  Country as AppCountry,
+  City as AppCity,
+  LocationState,
+} from "../types/types";
 import { Country, City, State, ICity } from "country-state-city";
 
 export const useLocationStore = create<LocationState>((set, get) => ({
@@ -45,7 +49,32 @@ export const useLocationStore = create<LocationState>((set, get) => ({
     set({ isLoadingCities: true });
 
     try {
-      const countryCode = get().selectedCountry?.code;
+      // First check for country in localStorage
+      const storedCountryJson = localStorage.getItem("selectedCountry");
+      let countryCode;
+      
+      if (storedCountryJson) {
+        try {
+          // Use the country from localStorage if available
+          const storedCountry = JSON.parse(storedCountryJson);
+          countryCode = storedCountry.code;
+          
+          // Ensure store state matches localStorage
+          if (get().selectedCountry?.code !== storedCountry.code) {
+            set({ selectedCountry: storedCountry });
+            countryName = storedCountry.name;
+          }
+        } catch (e) {
+          console.error("Error parsing stored country:", e);
+        }
+      }
+      
+      // Fallback to store state if localStorage didn't have valid data
+      if (!countryCode) {
+        countryCode = get().selectedCountry?.code;
+      }
+      
+      // If still no country code, throw error
       if (!countryCode) {
         throw new Error("No country code available");
       }
@@ -72,11 +101,14 @@ export const useLocationStore = create<LocationState>((set, get) => ({
       }
 
       // Format the cities as expected by the application
-      const cities = citiesList.map((city) => ({
-        name: city.name,
-        country: countryName,
-        prototype: {}, // Add the required prototype property
-      }) as AppCity);
+      const cities = citiesList.map(
+        (city) =>
+          ({
+            name: city.name,
+            country: countryName,
+            prototype: {}, // Add the required prototype property
+          } as AppCity)
+      );
 
       set({
         cities,
@@ -97,6 +129,9 @@ export const useLocationStore = create<LocationState>((set, get) => ({
 
   setLocationType: (type) => {
     set({ locationType: type });
+
+    // set location type in local storage
+    localStorage.setItem("locationType", type);
   },
 
   setSelectedCountry: (country) => {
@@ -120,13 +155,24 @@ export const useLocationStore = create<LocationState>((set, get) => ({
     const storedCity = localStorage.getItem("selectedCity");
 
     if (storedCountry) {
-      const country: AppCountry = JSON.parse(storedCountry);
-      set({ selectedCountry: country });
+      try {
+        const country: AppCountry = JSON.parse(storedCountry);
+        set({ selectedCountry: country });
+        
+        // Fetch cities for this country
+        get().fetchCities(country.name);
+      } catch (e) {
+        console.error("Error parsing stored country:", e);
+      }
     }
 
     if (storedCity) {
-      const city: string = JSON.parse(storedCity);
-      set({ selectedCity: city });
+      try {
+        const city = JSON.parse(storedCity);
+        set({ selectedCity: city });
+      } catch (e) {
+        console.error("Error parsing stored city:", e);
+      }
     }
   },
 
@@ -135,26 +181,13 @@ export const useLocationStore = create<LocationState>((set, get) => ({
     localStorage.removeItem("selectedCountry");
     localStorage.removeItem("selectedCity");
   },
-
-  // Initialize the store by loading the selected location from local storage at the start
-  init: () => {
-    const storedCountry = localStorage.getItem("selectedCountry");
-    const storedCity = localStorage.getItem("selectedCity");
-
-    if (storedCountry) {
-      const country: AppCountry = JSON.parse(storedCountry);
-      set({ selectedCountry: country });
-    }
-
-    if (storedCity) {
-      const city: string = JSON.parse(storedCity);
-      set({ selectedCity: city });
-    }
-  },
 }));
 
 // Helper function to provide fallback cities for common countries
-const getFallbackCities = (countryName: string, countryCode: string): AppCity[] => {
+const getFallbackCities = (
+  countryName: string,
+  countryCode: string
+): AppCity[] => {
   // Map of major cities by country code
   const fallbackCityMap: { [key: string]: string[] } = {
     US: ["New York", "Los Angeles", "Chicago", "Houston", "Phoenix"],

@@ -15,7 +15,6 @@ export const LocationSettingsDrawer = ({
     countries,
     cities,
     selectedCountry,
-    // selectedCity,
     isLoadingCountries,
     isLoadingCities,
     fetchCountries,
@@ -26,6 +25,8 @@ export const LocationSettingsDrawer = ({
 
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredCities, setFilteredCities] = useState<any[]>([]);
+  const [selectedCityName, setSelectedCityName] = useState("");
+  const [selectedCountryName, setSelectedCountryName] = useState({ name: "" });
 
   useEffect(() => {
     if (isOpen) {
@@ -44,6 +45,34 @@ export const LocationSettingsDrawer = ({
       setFilteredCities(cities);
     }
   }, [searchTerm, cities]);
+
+  useEffect(() => {
+    const country = localStorage.getItem("selectedCountry");
+    const city = localStorage.getItem("selectedCity");
+
+    if (country) {
+      const parsedCountry = JSON.parse(country);
+      setSelectedCountryName(parsedCountry.name || "");
+
+      // If we loaded a country, fetch its cities
+      if (parsedCountry && parsedCountry.code) {
+        setSelectedCountry(parsedCountry); // Make sure store is updated too
+      }
+    }
+
+    if (city) {
+      const parsedCity = JSON.parse(city);
+      // If city is stored as just a string (name)
+      if (typeof parsedCity === "string") {
+        setSearchTerm(parsedCity);
+      }
+      // If city is stored as an object
+      else if (parsedCity && parsedCity.name) {
+        setSearchTerm(parsedCity.name);
+        setSelectedCity(parsedCity);
+      }
+    }
+  }, []);
 
   if (!isOpen) return null;
 
@@ -163,11 +192,43 @@ export const LocationSettingsDrawer = ({
                 <div className="relative">
                   <input
                     type="text"
-                    className="w-full p-2 border rounded"
-                    placeholder="Search city..."
+                    className="w-full p-2 border rounded pr-8"
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.currentTarget.value)}
+                    onChange={(e) => {
+                      setSearchTerm(e.currentTarget.value);
+                      if (e.currentTarget.value === "") {
+                        setSelectedCityName("");
+                        setSelectedCity(null);
+                        localStorage.removeItem("selectedCity");
+                      }
+                    }}
+                    placeholder="Search for a city..."
                   />
+                  {searchTerm && (
+                    <button
+                      className="absolute inset-y-0 right-8 flex items-center pr-2"
+                      onClick={() => {
+                        setSearchTerm("");
+                        setSelectedCityName("");
+                        setSelectedCity(null);
+                        localStorage.removeItem("selectedCity");
+                      }}
+                    >
+                      <svg
+                        className="w-4 h-4 text-gray-500"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
+                  )}
                   <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                     <svg
                       className="w-4 h-4 text-gray-500"
@@ -185,6 +246,7 @@ export const LocationSettingsDrawer = ({
                   </div>
                 </div>
 
+                {/* City dropdown */}
                 {isLoadingCities ? (
                   <div className="mt-1 p-2 border rounded bg-gray-50">
                     Loading cities...
@@ -198,7 +260,8 @@ export const LocationSettingsDrawer = ({
                             key={city.name}
                             className="p-2 hover:bg-gray-100 cursor-pointer"
                             onClick={() => {
-                              setSelectedCity(city.name);
+                              setSelectedCity(city);
+                              setSelectedCityName(city.name);
                               setSearchTerm(city.name);
                             }}
                           >
