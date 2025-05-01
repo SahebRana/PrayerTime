@@ -15,6 +15,7 @@ export const LocationSettingsDrawer = ({
     countries,
     cities,
     selectedCountry,
+    // selectedCity,
     isLoadingCountries,
     isLoadingCities,
     fetchCountries,
@@ -25,8 +26,7 @@ export const LocationSettingsDrawer = ({
 
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredCities, setFilteredCities] = useState<any[]>([]);
-  const [selectedCityName, setSelectedCityName] = useState("");
-  const [selectedCountryName, setSelectedCountryName] = useState({ name: "" });
+  // const [selectedCountryName, setSelectedCountryName] = useState("");
 
   useEffect(() => {
     if (isOpen) {
@@ -52,11 +52,11 @@ export const LocationSettingsDrawer = ({
 
     if (country) {
       const parsedCountry = JSON.parse(country);
-      setSelectedCountryName(parsedCountry.name || "");
+      // setSelectedCountryName(parsedCountry.name || "");
 
       // If we loaded a country, fetch its cities
       if (parsedCountry && parsedCountry.code) {
-        setSelectedCountry(parsedCountry); // Make sure store is updated too
+        setSelectedCountry(parsedCountry);
       }
     }
 
@@ -75,6 +75,12 @@ export const LocationSettingsDrawer = ({
   }, []);
 
   if (!isOpen) return null;
+
+  const clearCity = () => {
+    setSelectedCity("");
+    setSearchTerm("");
+    localStorage.removeItem("selectedCity");
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex">
@@ -197,9 +203,7 @@ export const LocationSettingsDrawer = ({
                     onChange={(e) => {
                       setSearchTerm(e.currentTarget.value);
                       if (e.currentTarget.value === "") {
-                        setSelectedCityName("");
-                        setSelectedCity(null);
-                        localStorage.removeItem("selectedCity");
+                        clearCity();
                       }
                     }}
                     placeholder="Search for a city..."
@@ -208,10 +212,7 @@ export const LocationSettingsDrawer = ({
                     <button
                       className="absolute inset-y-0 right-8 flex items-center pr-2"
                       onClick={() => {
-                        setSearchTerm("");
-                        setSelectedCityName("");
-                        setSelectedCity(null);
-                        localStorage.removeItem("selectedCity");
+                        clearCity();
                       }}
                     >
                       <svg
@@ -246,7 +247,6 @@ export const LocationSettingsDrawer = ({
                   </div>
                 </div>
 
-                {/* City dropdown */}
                 {isLoadingCities ? (
                   <div className="mt-1 p-2 border rounded bg-gray-50">
                     Loading cities...
@@ -261,7 +261,6 @@ export const LocationSettingsDrawer = ({
                             className="p-2 hover:bg-gray-100 cursor-pointer"
                             onClick={() => {
                               setSelectedCity(city);
-                              setSelectedCityName(city.name);
                               setSearchTerm(city.name);
                             }}
                           >
