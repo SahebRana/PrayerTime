@@ -28,7 +28,7 @@ const Header: React.FunctionComponent<IHeaderProps> = () => {
   return (
     <>
       {/* Header */}
-      <header className="p-4 flex justify-between items-center text-black-primary">
+      <header className="p-4 flex justify-between items-center text-black-primary relative">
         <Link className="text-xl font-semibold" to={"/"}>
           Prayer Times
         </Link>

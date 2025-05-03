@@ -28,6 +28,7 @@
   "devDependencies": {
     "@preact/preset-vite": "^2.10.1",
     "@types/react-dom": "^19.0.3",
+    "source-map-explorer": "^2.5.3",
     "typescript": "~5.7.2",
     "vite": "^6.1.0",
     "vite-plugin-pwa": "^1.0.0",
