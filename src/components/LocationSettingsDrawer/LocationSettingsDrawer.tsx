@@ -79,20 +79,20 @@ export const LocationSettingsDrawer = ({
     <>
       {/* Backdrop overlay */}
       {isOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-[#00000066] z-[1999]"
           onClick={onClose}
         />
       )}
-      
+
       {/* Drawer */}
-      <div 
+      <div
         className={`fixed top-0 right-0 bottom-0 z-[2000] transition-all duration-300 ease-in-out ${
           isOpen ? "w-80" : "w-0 opacity-0"
         }`}
       >
-        <div className="h-full bg-gray-100 shadow-lg w-80 overflow-hidden flex flex-col">
-          <div className="p-4 bg-white flex items-center border-b">
+        <div className="h-full bg-primary w-80 overflow-hidden flex flex-col">
+          <div className="p-4 bg-primary flex items-center border-b border-border-color">
             <button onClick={onClose} className="mr-2">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -109,11 +109,12 @@ export const LocationSettingsDrawer = ({
                 />
               </svg>
             </button>
-            <h2 className="text-lg font-medium">Settings</h2>
+
+            <h2 className="text-xl font-semibold">Settings</h2>
           </div>
 
           <div className="p-4 overflow-y-auto flex-1">
-            <h3 className="text-md font-medium mb-2">Location Type</h3>
+            <h3 className="font-medium mb-2">Location Type</h3>
 
             <div className="mb-4">
               <div className="flex items-center mb-2">
@@ -121,7 +122,7 @@ export const LocationSettingsDrawer = ({
                   type="radio"
                   id="auto"
                   name="locationType"
-                  className="mr-2"
+                  className="mr-2 accent-black-primary"
                   checked={locationType === "auto"}
                   onChange={() => setLocationType("auto")}
                 />
@@ -133,7 +134,7 @@ export const LocationSettingsDrawer = ({
                   type="radio"
                   id="giveAccess"
                   name="locationType"
-                  className="mr-2"
+                  className="mr-2 accent-black-primary"
                   checked={locationType === "giveAccess"}
                   onChange={() => setLocationType("giveAccess")}
                 />
@@ -145,7 +146,7 @@ export const LocationSettingsDrawer = ({
                   type="radio"
                   id="select"
                   name="locationType"
-                  className="mr-2"
+                  className="mr-2 accent-black-primary"
                   checked={locationType === "select"}
                   onChange={() => setLocationType("select")}
                 />
@@ -156,9 +157,10 @@ export const LocationSettingsDrawer = ({
             {locationType === "select" && (
               <div className="mt-4">
                 <div className="mb-4">
-                  <label className="block text-sm font-medium mb-1">
+                  <label className="block text-sm font-medium mb-1 text-black-secondary">
                     Country
                   </label>
+
                   <div className="relative">
                     {isLoadingCountries ? (
                       <div className="w-full p-2 border rounded bg-gray-50">
@@ -166,7 +168,7 @@ export const LocationSettingsDrawer = ({
                       </div>
                     ) : (
                       <select
-                        className="w-full p-2 border rounded pr-8 appearance-none bg-white"
+                        className="w-full px-2 border-black-secondary border rounded-lg pr-8 appearance-none bg-primary"
                         value={selectedCountry?.name || ""}
                         onChange={(e) => {
                           const country = countries.find(
@@ -182,6 +184,7 @@ export const LocationSettingsDrawer = ({
                         ))}
                       </select>
                     )}
+
                     <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                       <svg
                         className="w-4 h-4"
@@ -201,11 +204,14 @@ export const LocationSettingsDrawer = ({
                 </div>
 
                 <div className="mb-4">
-                  <label className="block text-sm font-medium mb-1">City</label>
+                  <label className="block text-sm font-medium mb-1 text-black-secondary">
+                    City
+                  </label>
+
                   <div className="relative">
                     <input
                       type="text"
-                      className="w-full p-2 border rounded pr-8"
+                      className="w-full px-2 border rounded-lg border-black-secondary pr-8"
                       value={searchTerm}
                       onChange={(e) => {
                         setSearchTerm(e.currentTarget.value);
@@ -215,6 +221,7 @@ export const LocationSettingsDrawer = ({
                       }}
                       placeholder="Search for a city..."
                     />
+
                     {searchTerm && (
                       <button
                         className="absolute inset-y-0 right-8 flex items-center pr-2"
@@ -237,6 +244,7 @@ export const LocationSettingsDrawer = ({
                         </svg>
                       </button>
                     )}
+
                     <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                       <svg
                         className="w-4 h-4 text-gray-500"
@@ -260,12 +268,12 @@ export const LocationSettingsDrawer = ({
                     </div>
                   ) : (
                     searchTerm && (
-                      <div className="mt-1 border rounded max-h-48 overflow-y-auto bg-white">
+                      <div className="mt-1 border border-[#d1d9e0b3] rounded-lg max-h-48 overflow-y-auto bg-light">
                         {filteredCities.length > 0 ? (
                           filteredCities.map((city) => (
                             <div
                               key={city.name}
-                              className="p-2 hover:bg-gray-100 cursor-pointer"
+                              className="px-2 hover:bg-gray-100 cursor-pointer"
                               onClick={() => {
                                 setSelectedCity(city);
                                 setSearchTerm(city.name);
