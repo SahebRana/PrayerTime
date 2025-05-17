@@ -4,11 +4,13 @@ import { SlOptionsVertical } from "react-icons/sl";
 import { BsCalendarEvent } from "react-icons/bs";
 import { Link, useLocation } from "react-router";
 import useHeaderStore from "../../store/useHeaderStore";
+import { LocationSettingsDrawer } from "../LocationSettingsDrawer/LocationSettingsDrawer";
 
 interface IHeaderProps {}
 
 const Header: React.FunctionComponent<IHeaderProps> = () => {
   const { isCalender, setCalender } = useHeaderStore();
+  const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
   const location = useLocation();
   const pathname = location.pathname;
 
@@ -26,7 +28,7 @@ const Header: React.FunctionComponent<IHeaderProps> = () => {
   return (
     <>
       {/* Header */}
-      <header className="p-4 flex justify-between items-center text-black-primary">
+      <header className="p-4 flex justify-between items-center text-black-primary relative">
         <Link className="text-xl font-semibold" to={"/"}>
           Prayer Times
         </Link>
@@ -44,7 +46,17 @@ const Header: React.FunctionComponent<IHeaderProps> = () => {
             </Link>
           )}
 
-          <SlOptionsVertical size={20} />
+          <span
+            onClick={() => setIsDrawerOpen(true)}
+            className="cursor-pointer"
+          >
+            <SlOptionsVertical size={20} />
+          </span>
+          
+          <LocationSettingsDrawer
+            isOpen={isDrawerOpen}
+            onClose={() => setIsDrawerOpen(false)}
+          />
         </div>
       </header>
     </>
