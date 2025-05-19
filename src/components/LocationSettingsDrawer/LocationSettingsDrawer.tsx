@@ -21,10 +21,15 @@ export const LocationSettingsDrawer = ({
     setLocationType,
     setSelectedCountry,
     setSelectedCity,
+    getLocationType,
   } = useLocationStore();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredCities, setFilteredCities] = useState<any[]>([]);
+
+  useEffect(() => {
+    getLocationType();
+  }, [getLocationType]);
 
   useEffect(() => {
     if (isOpen) {

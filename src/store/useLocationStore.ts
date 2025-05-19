@@ -3,6 +3,7 @@ import {
   Country as AppCountry,
   City as AppCity,
   LocationState,
+  LocationType,
 } from "../types/types";
 import { Country, City, State, ICity } from "country-state-city";
 
@@ -52,13 +53,13 @@ export const useLocationStore = create<LocationState>((set, get) => ({
       // First check for country in localStorage
       const storedCountryJson = localStorage.getItem("selectedCountry");
       let countryCode;
-      
+
       if (storedCountryJson) {
         try {
           // Use the country from localStorage if available
           const storedCountry = JSON.parse(storedCountryJson);
           countryCode = storedCountry.code;
-          
+
           // Ensure store state matches localStorage
           if (get().selectedCountry?.code !== storedCountry.code) {
             set({ selectedCountry: storedCountry });
@@ -68,12 +69,12 @@ export const useLocationStore = create<LocationState>((set, get) => ({
           console.error("Error parsing stored country:", e);
         }
       }
-      
+
       // Fallback to store state if localStorage didn't have valid data
       if (!countryCode) {
         countryCode = get().selectedCountry?.code;
       }
-      
+
       // If still no country code, throw error
       if (!countryCode) {
         throw new Error("No country code available");
@@ -134,6 +135,13 @@ export const useLocationStore = create<LocationState>((set, get) => ({
     localStorage.setItem("locationType", type);
   },
 
+  getLocationType: () => {
+    const storedType = localStorage.getItem("locationType");
+    if (storedType) {
+      set({ locationType: storedType as LocationType });
+    }
+  },
+
   setSelectedCountry: (country) => {
     set({ selectedCountry: country, selectedCity: null });
     get().fetchCities(country.name);
@@ -158,7 +166,7 @@ export const useLocationStore = create<LocationState>((set, get) => ({
       try {
         const country: AppCountry = JSON.parse(storedCountry);
         set({ selectedCountry: country });
-        
+
         // Fetch cities for this country
         get().fetchCities(country.name);
       } catch (e) {
