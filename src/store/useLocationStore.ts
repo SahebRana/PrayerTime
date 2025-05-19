@@ -166,20 +166,22 @@ export const useLocationStore = create<LocationState>((set, get) => ({
       try {
         const country: AppCountry = JSON.parse(storedCountry);
         set({ selectedCountry: country });
-
-        // Fetch cities for this country
+        // Also fetch cities for this country
         get().fetchCities(country.name);
       } catch (e) {
-        console.error("Error parsing stored country:", e);
+        console.error("Failed to parse stored country", e);
       }
     }
 
     if (storedCity) {
       try {
-        const city = JSON.parse(storedCity);
-        set({ selectedCity: city });
+        const city: AppCity = JSON.parse(storedCity); // Ensure it's parsed as AppCity type
+        // Only set the city if it's a valid object with required properties
+        if (city && typeof city === 'object' && city.name) {
+          set({ selectedCity: city });
+        }
       } catch (e) {
-        console.error("Error parsing stored city:", e);
+        console.error("Failed to parse stored city", e);
       }
     }
   },

@@ -75,7 +75,7 @@ export const LocationSettingsDrawer = ({
   if (!isOpen) return null;
 
   const clearCity = () => {
-    setSelectedCity("");
+    setSelectedCity({} as any);
     setSearchTerm("");
     localStorage.removeItem("selectedCity");
   };

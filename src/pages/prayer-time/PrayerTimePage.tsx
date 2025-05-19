@@ -6,80 +6,135 @@ import useTimes from "../../hooks/useTimes";
 import PrayerTimer from "../../components/PrayerTimer/PrayerTimer";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
+import { useLocationStore } from "../../store/useLocationStore";
 
 const PrayerTimesPage = () => {
   const [currentDate, setCurrentDate] = useState(dayjs());
-  // const [city, setCity] = useState('tokyo');
-  const [city] = useState('tokyo');
-  // const [country, setCountry] = useState('JP');
-  const [country] = useState('JP');
+  const { selectedCountry, selectedCity, loadSelectedLocation } = useLocationStore();
+  
+  // Get city and country with localStorage -> store -> default fallback priority
+  const [cityName, setCityName] = useState<string>("");
+  const [countryName, setCountryName] = useState<string>("");
+  
+  // Initialize city and country from localStorage or store or defaults
+  useEffect(() => {
+    // First try to get from localStorage directly
+    const storedCity = localStorage.getItem("selectedCity");
+    const storedCountry = localStorage.getItem("selectedCountry");
+    
+    let cityValue = "";
+    let countryValue = "";
+    
+    // Parse from localStorage if available
+    if (storedCity) {
+      try {
+        const cityData = JSON.parse(storedCity);
+        cityValue = cityData.name;
+      } catch (e) {
+        console.error("Error parsing stored city:", e);
+      }
+    }
+    
+    if (storedCountry) {
+      try {
+        const countryData = JSON.parse(storedCountry);
+        countryValue = countryData.name;
+      } catch (e) {
+        console.error("Error parsing stored country:", e);
+      }
+    }
+    
+    // If not found in localStorage, use store values
+    if (!cityValue && selectedCity?.name) {
+      cityValue = selectedCity.name;
+    }
+    
+    if (!countryValue && selectedCountry?.name) {
+      countryValue = selectedCountry.name;
+    }
+    
+    // Default fallbacks if nothing else available
+    setCityName(cityValue || "Kushtia");
+    setCountryName(countryValue || "Bangladesh");
+    
+  }, [selectedCity, selectedCountry]);
 
-  const [dayName, setDayName] = useState('Today');
-  const { prayerTimes, hijriDate, loading } = useTimes(currentDate, { city, country });
+  const [dayName, setDayName] = useState("");
+
+  const { prayerTimes, hijriDate, loading } = useTimes(currentDate, {
+    city: cityName,
+    country: countryName,
+  });
+
+  // Load the selected location when the component mounts
+  useEffect(() => {
+    loadSelectedLocation();
+  }, [loadSelectedLocation]);
 
   const { register, handleSubmit, watch } = useForm<PrayerFormData>({
     defaultValues: {
-      completedPrayers: prayerTimes
-        ?.filter((prayer) => prayer.completed)
-        .map((prayer) => prayer.name) || [],
-      notifications: prayerTimes
-        ?.filter((prayer) => prayer.notificationEnabled)
-        .map((prayer) => prayer.name) || [],
+      completedPrayers:
+        prayerTimes
+          ?.filter((prayer) => prayer.completed)
+          .map((prayer) => prayer.name) || [],
+      notifications:
+        prayerTimes
+          ?.filter((prayer) => prayer.notificationEnabled)
+          .map((prayer) => prayer.name) || [],
     },
   });
 
   const completedPrayers = watch("completedPrayers");
   const notifications = watch("notifications");
 
-  // Watch for changes and submit immediately
   useEffect(() => {
     handleSubmit(onSubmit)();
   }, [completedPrayers, notifications]);
 
   const onSubmit = (data: PrayerFormData) => {
     console.log("Form submitted:", data);
-    // Handle form submission here
   };
 
   const addDay = () => {
-    setCurrentDate(currentDate.add(1, 'day'));
-  }
+    setCurrentDate(currentDate.add(1, "day"));
+  };
 
   const subtractDay = () => {
-    setCurrentDate(currentDate.subtract(1, 'day'));
-  }
+    setCurrentDate(currentDate.subtract(1, "day"));
+  };
 
   useEffect(() => {
     const today = dayjs();
-    if (today.isSame(currentDate, 'd')) {
-      setDayName('Today');
+    if (today.isSame(currentDate, "d")) {
+      setDayName("Today");
+    } else if (today.isSame(currentDate.add(1, "day"), "d")) {
+      setDayName("Yesterday");
+    } else if (today.isSame(currentDate.subtract(1, "day"), "d")) {
+      setDayName("Tomorrow");
+    } else {
+      setDayName(currentDate.format("dddd"));
     }
-    else if (today.isSame(currentDate.add(1, 'day'), 'd')) {
-      setDayName('Yesterday');
-    }
-    else if (today.isSame(currentDate.subtract(1, 'day'), 'd')) {
-      setDayName('Tomorrow');
-    }
-    else {
-      setDayName(currentDate.format('dddd'));
-    }
-  }, [currentDate])
+  }, [currentDate]);
 
   return (
     <div className="flex flex-col bg-light rounded-lg">
       <main className="flex-1 px-4 pb-4">
         <div>
           <div className="my-4 flex items-center justify-between">
-            <button onClick={subtractDay}><FaChevronLeft color="#1f2328" /></button>
+            <button onClick={subtractDay}>
+              <FaChevronLeft color="#1f2328" />
+            </button>
 
             <div className="text-lg font-semibold mb-2 text-center">
               <p className={"text-black-primary text-sm"}>{dayName}</p>
               <p className={"text-xs text-black-secondary capitalize"}>
-                {city}, {currentDate.format('DD MMM YYYY')}, {hijriDate}
+                {cityName}, {currentDate.format("DD MMM YYYY")}, {hijriDate}
               </p>
             </div>
 
-            <button onClick={addDay}><FaChevronRight color="#1f2328" /></button>
+            <button onClick={addDay}>
+              <FaChevronRight color="#1f2328" />
+            </button>
           </div>
 
           <div className="overview mb-4">
