@@ -46,7 +46,7 @@ export interface LocationState {
   fetchCountries: () => Promise<void>;
   fetchCities: (countryName: string) => Promise<void>;
   setLocationType: (type: LocationType) => void;
-  getLocationType: () => void;
+  getLocationType: () => LocationType;
   setSelectedCountry: (country: Country) => void;
   setSelectedCity: (city: string) => void;
 }
