@@ -132,11 +132,11 @@ export const useLocationStore = create<LocationState>((set, get) => ({
     set({ locationType: type });
 
     // set location type in local storage
-    localStorage.setItem("locationType", type);
+    localStorage.setItem(LOCATION_TYPE_KEY, type);
   },
 
   getLocationType: () => {
-    const storedType = localStorage.getItem("locationType");
+    const storedType = localStorage.getItem(LOCATION_TYPE_KEY);
     if (storedType) {
       set({ locationType: storedType as LocationType });
     }
