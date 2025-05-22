@@ -29,7 +29,7 @@ export const LocationSettingsDrawer = ({
 
   useEffect(() => {
     getLocationType();
-  }, [getLocationType]);
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
