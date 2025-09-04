@@ -196,31 +196,82 @@ export const useLocationStore = create<LocationState>((set, get) => ({
   detectLocation: async () => {
     set({ isDetectingLocation: true });
     
-    try {
-      const response = await fetch('https://ipapi.co/json/');
-      const data = await response.json();
-      
-      if (data.city && data.country_name) {
-        const autoCountry = { name: data.country_name, code: data.country_code || data.country };
-        const autoCity = { name: data.city, country: data.country_name, prototype: "" };
-        
-        set({ 
-          selectedCountry: autoCountry, 
-          selectedCity: autoCity,
-          isDetectingLocation: false 
-        });
-        
-        localStorage.setItem("selectedCountry", JSON.stringify(autoCountry));
-        localStorage.setItem("selectedCity", JSON.stringify(autoCity));
-        localStorage.setItem("locationType", "auto");
-      } else {
-        throw new Error("Unable to detect location");
+    // Multiple IP geolocation services with fallbacks
+    const geolocationServices = [
+      {
+        name: 'ipapi.co',
+        url: 'https://ipapi.co/json/',
+        parseResponse: (data: any) => ({
+          city: data.city,
+          country_name: data.country_name,
+          country_code: data.country_code || data.country
+        })
+      },
+      {
+        name: 'ipinfo.io',
+        url: 'https://ipinfo.io/json',
+        parseResponse: (data: any) => ({
+          city: data.city,
+          country_name: data.country,
+          country_code: data.country
+        })
+      },
+      {
+        name: 'ip-api.com',
+        url: 'http://ip-api.com/json/',
+        parseResponse: (data: any) => ({
+          city: data.city,
+          country_name: data.country,
+          country_code: data.countryCode
+        })
       }
-    } catch (error) {
-      console.error("Error detecting location:", error);
-      set({ isDetectingLocation: false });
-      throw error;
+    ];
+    
+    for (const service of geolocationServices) {
+      try {
+        console.log(`Trying IP geolocation service: ${service.name}`);
+        const response = await fetch(service.url);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        
+        const data = await response.json();
+        const locationData = service.parseResponse(data);
+        
+        if (locationData.city && locationData.country_name) {
+          const autoCountry = { 
+            name: locationData.country_name, 
+            code: locationData.country_code || locationData.country_name.substring(0, 2).toUpperCase() 
+          };
+          const autoCity = { 
+            name: locationData.city, 
+            country: locationData.country_name, 
+            prototype: "" 
+          };
+          
+          set({ 
+            selectedCountry: autoCountry, 
+            selectedCity: autoCity,
+            isDetectingLocation: false 
+          });
+          
+          localStorage.setItem("selectedCountry", JSON.stringify(autoCountry));
+          localStorage.setItem("selectedCity", JSON.stringify(autoCity));
+          localStorage.setItem("locationType", "auto");
+          
+          console.log(`Successfully detected location using ${service.name}:`, { city: locationData.city, country: locationData.country_name });
+          return;
+        }
+      } catch (error) {
+        console.warn(`Failed to get location from ${service.name}:`, error);
+        continue;
+      }
     }
+    
+    // If all services failed
+    set({ isDetectingLocation: false });
+    throw new Error("Unable to detect location from any IP geolocation service");
   },
 
   requestLocationAccess: async () => {
