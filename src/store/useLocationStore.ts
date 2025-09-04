@@ -15,6 +15,7 @@ export const useLocationStore = create<LocationState>((set, get) => ({
   selectedCity: null,
   isLoadingCountries: false,
   isLoadingCities: false,
+  isDetectingLocation: false,
 
   fetchCountries: async () => {
     set({ isLoadingCountries: true });
@@ -190,6 +191,112 @@ export const useLocationStore = create<LocationState>((set, get) => ({
     set({ selectedCountry: null, selectedCity: null });
     localStorage.removeItem("selectedCountry");
     localStorage.removeItem("selectedCity");
+  },
+
+  detectLocation: async () => {
+    set({ isDetectingLocation: true });
+    
+    try {
+      const response = await fetch('https://ipapi.co/json/');
+      const data = await response.json();
+      
+      if (data.city && data.country_name) {
+        const autoCountry = { name: data.country_name, code: data.country_code || data.country };
+        const autoCity = { name: data.city, country: data.country_name, prototype: "" };
+        
+        set({ 
+          selectedCountry: autoCountry, 
+          selectedCity: autoCity,
+          isDetectingLocation: false 
+        });
+        
+        localStorage.setItem("selectedCountry", JSON.stringify(autoCountry));
+        localStorage.setItem("selectedCity", JSON.stringify(autoCity));
+        localStorage.setItem("locationType", "auto");
+      } else {
+        throw new Error("Unable to detect location");
+      }
+    } catch (error) {
+      console.error("Error detecting location:", error);
+      set({ isDetectingLocation: false });
+      throw error;
+    }
+  },
+
+  requestLocationAccess: async () => {
+    set({ isDetectingLocation: true });
+    
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        set({ isDetectingLocation: false });
+        reject(new Error("Geolocation is not supported by this browser"));
+        return;
+      }
+      
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          try {
+            const { latitude, longitude } = position.coords;
+            
+            const response = await fetch(
+              `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
+            );
+            const data = await response.json();
+            
+            if (data.city && data.countryName) {
+              const geoCountry = { name: data.countryName, code: data.countryCode || "" };
+              const geoCity = { name: data.city, country: data.countryName, prototype: "" };
+              
+              set({ 
+                selectedCountry: geoCountry, 
+                selectedCity: geoCity,
+                isDetectingLocation: false 
+              });
+              
+              localStorage.setItem("selectedCountry", JSON.stringify(geoCountry));
+              localStorage.setItem("selectedCity", JSON.stringify(geoCity));
+              localStorage.setItem("locationType", "giveAccess");
+              resolve(undefined);
+            } else {
+              throw new Error("Unable to get location name");
+            }
+          } catch (error) {
+            console.error("Error with reverse geocoding:", error);
+            set({ isDetectingLocation: false });
+            reject(error);
+          }
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+          set({ isDetectingLocation: false });
+          
+          // Create user-friendly error message based on error code
+          let userMessage = "Unable to access location";
+          switch (error.code) {
+            case 1: // PERMISSION_DENIED
+              userMessage = "Location access was denied. Please enable location permissions in your browser settings.";
+              break;
+            case 2: // POSITION_UNAVAILABLE
+              userMessage = "Location information is unavailable. Please check your internet connection.";
+              break;
+            case 3: // TIMEOUT
+              userMessage = "Location request timed out. Please try again.";
+              break;
+            default:
+              userMessage = `Location access failed: ${error.message}`;
+          }
+          
+          const enhancedError = new Error(userMessage) as Error & { code: number };
+          enhancedError.code = error.code;
+          reject(enhancedError);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 300000
+        }
+      );
+    });
   },
 }));
 

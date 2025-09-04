@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tsc:*)",
+      "Bash(npx tsc:*)",
+      "Read(/C:\\Projects\\PrayerTime\\src\\store/**)",
+      "Read(/C:\\Projects\\PrayerTime\\src\\components\\LocationSettingsDrawer/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
