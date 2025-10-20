@@ -7,6 +7,7 @@ import { SingleDateDto } from "../models/single-day-dto";
 import dayjs from 'dayjs';
 
 const useTimes = (date: any, params: any) => {
+  const { city, country } = params;
   const queryString = new URLSearchParams(params).toString();
   const url = `${baseURL}/timingsByCity/${dayjs(date).format('DD-MM-YYYY')}?${queryString}`
   const [prayerTimes, setPrayerTimes] = React.useState<PrayerTime[]>([]);
@@ -17,6 +18,15 @@ const useTimes = (date: any, params: any) => {
   React.useEffect(() => {
     const fetchPrayerTimes = async () => {
       try {
+        // Only fetch if we have both city and country
+        if (!city || !country) {
+          setError("City and country are required");
+          setLoading(false);
+          return;
+        }
+
+        console.log(`Fetching prayer times for ${city}, ${country} on ${dayjs(date).format('DD-MM-YYYY')}`);
+        
         const response = await axios.get<SingleDateDto>(url);
 
         const timings = response.data.data.timings;
@@ -70,13 +80,14 @@ const useTimes = (date: any, params: any) => {
         setHijriDate(`${hijri.day} ${hijri.month.en} ${hijri.year}`);
         setLoading(false);
       } catch (err) {
+        console.error("Error fetching prayer times:", err);
         setError("Error fetching prayer times");
         setLoading(false);
       }
     };
 
     fetchPrayerTimes();
-  }, [date]);
+  }, [date, city, country, url]); // Include city and country in dependencies
 
   return { prayerTimes, hijriDate, loading, error };
 };

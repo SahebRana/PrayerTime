@@ -40,12 +40,14 @@ export interface LocationState {
   countries: Country[];
   cities: City[];
   selectedCountry: Country | null;
-  selectedCity: string | null;
+  selectedCity: City | null;
   isLoadingCountries: boolean;
   isLoadingCities: boolean;
   fetchCountries: () => Promise<void>;
   fetchCities: (countryName: string) => Promise<void>;
   setLocationType: (type: LocationType) => void;
+  getLocationType: () => void;
   setSelectedCountry: (country: Country) => void;
-  setSelectedCity: (city: string) => void;
+  setSelectedCity: (city: City) => void;
+  loadSelectedLocation: () => void;
 }

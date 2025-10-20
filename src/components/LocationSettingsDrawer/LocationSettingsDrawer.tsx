@@ -21,10 +21,15 @@ export const LocationSettingsDrawer = ({
     setLocationType,
     setSelectedCountry,
     setSelectedCity,
+    getLocationType,
   } = useLocationStore();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredCities, setFilteredCities] = useState<any[]>([]);
+
+  useEffect(() => {
+    getLocationType();
+  }, [getLocationType]);
 
   useEffect(() => {
     if (isOpen) {
@@ -70,7 +75,7 @@ export const LocationSettingsDrawer = ({
   if (!isOpen) return null;
 
   const clearCity = () => {
-    setSelectedCity("");
+    setSelectedCity({} as any);
     setSearchTerm("");
     localStorage.removeItem("selectedCity");
   };
