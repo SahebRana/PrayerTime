@@ -43,6 +43,7 @@ export interface LocationState {
   selectedCity: City | null;
   isLoadingCountries: boolean;
   isLoadingCities: boolean;
+  isDetectingLocation: boolean;
   fetchCountries: () => Promise<void>;
   fetchCities: (countryName: string) => Promise<void>;
   setLocationType: (type: LocationType) => void;
@@ -50,4 +51,6 @@ export interface LocationState {
   setSelectedCountry: (country: Country) => void;
   setSelectedCity: (city: City) => void;
   loadSelectedLocation: () => void;
+  detectLocation: () => Promise<void>;
+  requestLocationAccess: () => Promise<void>;
 }

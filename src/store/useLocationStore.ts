@@ -15,6 +15,7 @@ export const useLocationStore = create<LocationState>((set, get) => ({
   selectedCity: null,
   isLoadingCountries: false,
   isLoadingCities: false,
+  isDetectingLocation: false,
 
   fetchCountries: async () => {
     set({ isLoadingCountries: true });
@@ -190,6 +191,163 @@ export const useLocationStore = create<LocationState>((set, get) => ({
     set({ selectedCountry: null, selectedCity: null });
     localStorage.removeItem("selectedCountry");
     localStorage.removeItem("selectedCity");
+  },
+
+  detectLocation: async () => {
+    set({ isDetectingLocation: true });
+    
+    // Multiple IP geolocation services with fallbacks
+    const geolocationServices = [
+      {
+        name: 'ipapi.co',
+        url: 'https://ipapi.co/json/',
+        parseResponse: (data: any) => ({
+          city: data.city,
+          country_name: data.country_name,
+          country_code: data.country_code || data.country
+        })
+      },
+      {
+        name: 'ipinfo.io',
+        url: 'https://ipinfo.io/json',
+        parseResponse: (data: any) => ({
+          city: data.city,
+          country_name: data.country,
+          country_code: data.country
+        })
+      },
+      {
+        name: 'ip-api.com',
+        url: 'http://ip-api.com/json/',
+        parseResponse: (data: any) => ({
+          city: data.city,
+          country_name: data.country,
+          country_code: data.countryCode
+        })
+      }
+    ];
+    
+    for (const service of geolocationServices) {
+      try {
+        console.log(`Trying IP geolocation service: ${service.name}`);
+        const response = await fetch(service.url);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        
+        const data = await response.json();
+        const locationData = service.parseResponse(data);
+        
+        if (locationData.city && locationData.country_name) {
+          const autoCountry = { 
+            name: locationData.country_name, 
+            code: locationData.country_code || locationData.country_name.substring(0, 2).toUpperCase() 
+          };
+          const autoCity = { 
+            name: locationData.city, 
+            country: locationData.country_name, 
+            prototype: "" 
+          };
+          
+          set({ 
+            selectedCountry: autoCountry, 
+            selectedCity: autoCity,
+            isDetectingLocation: false 
+          });
+          
+          localStorage.setItem("selectedCountry", JSON.stringify(autoCountry));
+          localStorage.setItem("selectedCity", JSON.stringify(autoCity));
+          localStorage.setItem("locationType", "auto");
+          
+          console.log(`Successfully detected location using ${service.name}:`, { city: locationData.city, country: locationData.country_name });
+          return;
+        }
+      } catch (error) {
+        console.warn(`Failed to get location from ${service.name}:`, error);
+        continue;
+      }
+    }
+    
+    // If all services failed
+    set({ isDetectingLocation: false });
+    throw new Error("Unable to detect location from any IP geolocation service");
+  },
+
+  requestLocationAccess: async () => {
+    set({ isDetectingLocation: true });
+    
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        set({ isDetectingLocation: false });
+        reject(new Error("Geolocation is not supported by this browser"));
+        return;
+      }
+      
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          try {
+            const { latitude, longitude } = position.coords;
+            
+            const response = await fetch(
+              `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
+            );
+            const data = await response.json();
+            
+            if (data.city && data.countryName) {
+              const geoCountry = { name: data.countryName, code: data.countryCode || "" };
+              const geoCity = { name: data.city, country: data.countryName, prototype: "" };
+              
+              set({ 
+                selectedCountry: geoCountry, 
+                selectedCity: geoCity,
+                isDetectingLocation: false 
+              });
+              
+              localStorage.setItem("selectedCountry", JSON.stringify(geoCountry));
+              localStorage.setItem("selectedCity", JSON.stringify(geoCity));
+              localStorage.setItem("locationType", "giveAccess");
+              resolve(undefined);
+            } else {
+              throw new Error("Unable to get location name");
+            }
+          } catch (error) {
+            console.error("Error with reverse geocoding:", error);
+            set({ isDetectingLocation: false });
+            reject(error);
+          }
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+          set({ isDetectingLocation: false });
+          
+          // Create user-friendly error message based on error code
+          let userMessage = "Unable to access location";
+          switch (error.code) {
+            case 1: // PERMISSION_DENIED
+              userMessage = "Location access was denied. Please enable location permissions in your browser settings.";
+              break;
+            case 2: // POSITION_UNAVAILABLE
+              userMessage = "Location information is unavailable. Please check your internet connection.";
+              break;
+            case 3: // TIMEOUT
+              userMessage = "Location request timed out. Please try again.";
+              break;
+            default:
+              userMessage = `Location access failed: ${error.message}`;
+          }
+          
+          const enhancedError = new Error(userMessage) as Error & { code: number };
+          enhancedError.code = error.code;
+          reject(enhancedError);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 300000
+        }
+      );
+    });
   },
 }));
 

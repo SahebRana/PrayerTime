@@ -17,15 +17,19 @@ export const LocationSettingsDrawer = ({
     selectedCountry,
     isLoadingCountries,
     isLoadingCities,
+    isDetectingLocation,
     fetchCountries,
     setLocationType,
     setSelectedCountry,
     setSelectedCity,
     getLocationType,
+    detectLocation,
+    requestLocationAccess,
   } = useLocationStore();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredCities, setFilteredCities] = useState<any[]>([]);
+  const [locationError, setLocationError] = useState<string | null>(null);
 
   useEffect(() => {
     getLocationType();
@@ -122,6 +126,11 @@ export const LocationSettingsDrawer = ({
             <h3 className="font-medium mb-2">Location Type</h3>
 
             <div className="mb-4">
+              {locationError && (
+                <div className="mb-2 p-2 bg-red-100 border border-red-300 rounded text-red-700 text-sm">
+                  {locationError}
+                </div>
+              )}
               <div className="flex items-center mb-2">
                 <input
                   type="radio"
@@ -129,9 +138,22 @@ export const LocationSettingsDrawer = ({
                   name="locationType"
                   className="mr-2 accent-black-primary"
                   checked={locationType === "auto"}
-                  onChange={() => setLocationType("auto")}
+                  onChange={async () => {
+                    setLocationError(null);
+                    setLocationType("auto");
+                    try {
+                      await detectLocation();
+                    } catch (error) {
+                      setLocationError("Failed to detect location automatically. Please try manual selection.");
+                    }
+                  }}
                 />
-                <label htmlFor="auto">Auto</label>
+                <label htmlFor="auto" className="flex items-center">
+                  Auto
+                  {isDetectingLocation && locationType === "auto" && (
+                    <span className="ml-2 text-xs text-gray-500">Detecting...</span>
+                  )}
+                </label>
               </div>
 
               <div className="flex items-center mb-2">
@@ -141,9 +163,22 @@ export const LocationSettingsDrawer = ({
                   name="locationType"
                   className="mr-2 accent-black-primary"
                   checked={locationType === "giveAccess"}
-                  onChange={() => setLocationType("giveAccess")}
+                  onChange={async () => {
+                    setLocationError(null);
+                    setLocationType("giveAccess");
+                    try {
+                      await requestLocationAccess();
+                    } catch (error) {
+                      setLocationError((error as Error).message || "Failed to access location. Please check permissions or use manual selection.");
+                    }
+                  }}
                 />
-                <label htmlFor="giveAccess">Give Location Access</label>
+                <label htmlFor="giveAccess" className="flex items-center">
+                  Give Location Access
+                  {isDetectingLocation && locationType === "giveAccess" && (
+                    <span className="ml-2 text-xs text-gray-500">Requesting...</span>
+                  )}
+                </label>
               </div>
 
               <div className="flex items-center">
