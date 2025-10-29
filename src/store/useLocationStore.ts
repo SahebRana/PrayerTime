@@ -144,18 +144,35 @@ export const useLocationStore = create<LocationState>((set, get) => ({
   },
 
   setSelectedCountry: (country) => {
-    set({ selectedCountry: country, selectedCity: null });
-    get().fetchCities(country.name);
+    const currentCity = get().selectedCity;
+    
+    // Only clear city if the country actually changed
+    const isCountryChanged = get().selectedCountry?.code !== country.code;
+    
+    set({ 
+      selectedCountry: country, 
+      selectedCity: isCountryChanged ? null : currentCity 
+    });
+    
+    // Only fetch cities and clear localStorage if country changed
+    if (isCountryChanged) {
+      get().fetchCities(country.name);
+      localStorage.removeItem("selectedCity");
+    }
 
-    // set selected country in local storage
+    // Always save the selected country
     localStorage.setItem("selectedCountry", JSON.stringify(country));
   },
 
   setSelectedCity: (city) => {
     set({ selectedCity: city });
-
-    // set selected city in local storage
-    localStorage.setItem("selectedCity", JSON.stringify(city));
+    
+    // Save to localStorage
+    if (city && city.name) {
+      localStorage.setItem("selectedCity", JSON.stringify(city));
+    } else {
+      localStorage.removeItem("selectedCity");
+    }
   },
 
   // Load selected country and city from local storage

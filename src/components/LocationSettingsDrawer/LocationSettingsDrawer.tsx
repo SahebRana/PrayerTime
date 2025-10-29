@@ -15,10 +15,12 @@ export const LocationSettingsDrawer = ({
     countries,
     cities,
     selectedCountry,
+    selectedCity,
     isLoadingCountries,
     isLoadingCities,
     isDetectingLocation,
     fetchCountries,
+    fetchCities,
     setLocationType,
     setSelectedCountry,
     setSelectedCity,
@@ -30,6 +32,42 @@ export const LocationSettingsDrawer = ({
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredCities, setFilteredCities] = useState<any[]>([]);
   const [locationError, setLocationError] = useState<string | null>(null);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+  // Load from localStorage on component mount (only once)
+  useEffect(() => {
+    const country = localStorage.getItem("selectedCountry");
+    const city = localStorage.getItem("selectedCity");
+
+    if (country) {
+      try {
+        const parsedCountry = JSON.parse(country);
+        if (parsedCountry && parsedCountry.code) {
+          // Only set if not already set or different
+          if (!selectedCountry || selectedCountry.code !== parsedCountry.code) {
+            setSelectedCountry(parsedCountry);
+          }
+        }
+      } catch (e) {
+        console.error("Error parsing country:", e);
+      }
+    }
+
+    if (city) {
+      try {
+        const parsedCity = JSON.parse(city);
+        if (parsedCity && parsedCity.name) {
+          setSearchTerm(parsedCity.name);
+          setSelectedCity(parsedCity);
+        }
+      } catch (e) {
+        console.error("Error parsing city:", e);
+      }
+    }
+
+    // Mark initial load as complete after a short delay
+    setTimeout(() => setIsInitialLoad(false), 100);
+  }, []); // Keep empty dependency array
 
   useEffect(() => {
     getLocationType();
@@ -38,6 +76,21 @@ export const LocationSettingsDrawer = ({
   useEffect(() => {
     if (isOpen) {
       fetchCountries();
+
+      // Reload saved selections when drawer opens
+      // const country = localStorage.getItem("selectedCountry");
+      const city = localStorage.getItem("selectedCity");
+
+      if (city) {
+        try {
+          const parsedCity = JSON.parse(city);
+          if (parsedCity && parsedCity.name) {
+            setSearchTerm(parsedCity.name);
+          }
+        } catch (e) {
+          console.error("Error parsing city:", e);
+        }
+      }
     }
   }, [isOpen, fetchCountries]);
 
@@ -54,32 +107,16 @@ export const LocationSettingsDrawer = ({
   }, [searchTerm, cities]);
 
   useEffect(() => {
-    const country = localStorage.getItem("selectedCountry");
-    const city = localStorage.getItem("selectedCity");
-
-    if (country) {
-      const parsedCountry = JSON.parse(country);
-
-      if (parsedCountry && parsedCountry.code) {
-        setSelectedCountry(parsedCountry);
-      }
+    // Fetch cities when selectedCountry changes
+    if (selectedCountry && !isInitialLoad) {
+      fetchCities(selectedCountry.name);
     }
-
-    if (city) {
-      const parsedCity = JSON.parse(city);
-      if (typeof parsedCity === "string") {
-        setSearchTerm(parsedCity);
-      } else if (parsedCity && parsedCity.name) {
-        setSearchTerm(parsedCity.name);
-        setSelectedCity(parsedCity);
-      }
-    }
-  }, []);
+  }, [selectedCountry?.code, fetchCities, isInitialLoad]); // Use selectedCountry.code instead of selectedCountry
 
   if (!isOpen) return null;
 
   const clearCity = () => {
-    setSelectedCity({} as any);
+    setSelectedCity(null as any);
     setSearchTerm("");
     localStorage.removeItem("selectedCity");
   };
@@ -214,7 +251,9 @@ export const LocationSettingsDrawer = ({
                           const country = countries.find(
                             (c) => c.name === e.currentTarget.value
                           );
-                          if (country) setSelectedCountry(country);
+                          if (country) {
+                            setSelectedCountry(country);
+                          }
                         }}
                       >
                         {countries.map((country) => (
@@ -302,31 +341,28 @@ export const LocationSettingsDrawer = ({
                     </div>
                   </div>
 
+                  {/* City dropdown - hide after selection */}
                   {isLoadingCities ? (
                     <div className="mt-1 p-2 border rounded bg-gray-50">
                       Loading cities...
                     </div>
                   ) : (
-                    searchTerm && (
-                      <div className="mt-1 border border-[#d1d9e0b3] rounded-lg max-h-48 overflow-y-auto bg-light">
-                        {filteredCities.length > 0 ? (
-                          filteredCities.map((city) => (
-                            <div
-                              key={city.name}
-                              className="px-2 hover:bg-gray-100 cursor-pointer"
-                              onClick={() => {
-                                setSelectedCity(city);
-                                setSearchTerm(city.name);
-                              }}
-                            >
-                              {city.name}
-                            </div>
-                          ))
-                        ) : (
-                          <div className="p-2 text-gray-500">
-                            No cities found
+                    searchTerm &&
+                    filteredCities.length > 0 &&
+                    searchTerm !== selectedCity?.name && (
+                      <div className="mt-1 border rounded max-h-48 overflow-y-auto bg-white">
+                        {filteredCities.map((city) => (
+                          <div
+                            key={city.name}
+                            className="p-2 hover:bg-gray-100 cursor-pointer"
+                            onClick={() => {
+                              setSelectedCity(city);
+                              setSearchTerm(city.name);
+                            }}
+                          >
+                            {city.name}
                           </div>
-                        )}
+                        ))}
                       </div>
                     )
                   )}
