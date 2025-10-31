@@ -1,11 +1,7 @@
 import { useState, useEffect } from "react";
 import { PrayerTime } from "../../types/types";
 import dayjs from "dayjs";
-import duration from "dayjs/plugin/duration";
 import useNextPrayerStore from "../../store/useNextPrayerStore";
-
-// Initialize the duration plugin
-dayjs.extend(duration);
 
 interface PrayerTimerProps {
   prayerTimes: PrayerTime[];
@@ -77,11 +73,9 @@ const PrayerTimer: React.FC<PrayerTimerProps> = ({ prayerTimes }) => {
   const getTimeRemaining = () => {
     if (!nextPrayer || !nextPrayer.datetime) return "00:00";
 
-    const diff = nextPrayer.datetime.diff(dayjs());
-    const duration = dayjs.duration(diff);
-
-    const hours = Math.floor(duration.asHours());
-    const minutes = Math.floor(duration.asMinutes() % 60);
+    const diff = dayjs(nextPrayer.datetime).diff(dayjs());
+    const hours = Math.floor(diff / (3600000)) % 24;
+    const minutes = Math.ceil(diff / (60000)) % 60;
 
     return `${hours.toString().padStart(2, "0")}:${minutes
       .toString()
