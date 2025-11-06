@@ -8,7 +8,7 @@ import {
 import { Country, City, State, ICity } from "country-state-city";
 
 export const useLocationStore = create<LocationState>((set, get) => ({
-  locationType: "select",
+  locationType: "auto",
   countries: [],
   cities: [],
   selectedCountry: null,
