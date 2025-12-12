@@ -12,7 +12,7 @@ const PrayerTimesPage = () => {
   const [currentDate, setCurrentDate] = useState(dayjs());
   const { selectedCountry, selectedCity, loadSelectedLocation, detectLocation } = useLocationStore();
 
-  // Get city and country with localStorage -> store -> default fallback priority
+  // Get city and country with localStorage -> store -> auto -> default fallback priority
   const [cityName, setCityName] = useState<string>("");
   const [countryName, setCountryName] = useState<string>("");
 
@@ -45,19 +45,19 @@ const PrayerTimesPage = () => {
     }
 
     // If not found in localStorage, use store values
-    if (!cityValue && selectedCity?.name) {
-      cityValue = selectedCity.name;
+    if ((!cityValue) || (!countryValue)) {
+      detectLocation().then(data => {
+        console.log(data);
+        setCityName(data.selectedCity.name || "Dhaka");
+        setCountryName(data.selectedCountry.name || "Bangladesh");
+      });
     }
-
-    if (!countryValue && selectedCountry?.name) {
-      countryValue = selectedCountry.name;
+    else {
+      // Default fallbacks if nothing else available
+      setCityName(cityValue || "Dhaka");
+      setCountryName(countryValue || "Bangladesh");
     }
-
-    // Default fallbacks if nothing else available
-    setCityName(cityValue || "Dhaka");
-    setCountryName(countryValue || "Bangladesh");
-
-  }, [selectedCity, selectedCountry]);
+  }, []);
 
   const [dayName, setDayName] = useState("");
 
@@ -69,7 +69,15 @@ const PrayerTimesPage = () => {
   // Load the selected location when the component mounts
   useEffect(() => {
     loadSelectedLocation();
-  }, [loadSelectedLocation]);
+  }, []);
+
+  // Reset if location updated
+  useEffect(() => {
+    if (selectedCity?.name && selectedCountry?.name) {
+      setCityName(selectedCity.name);
+      setCountryName(selectedCountry.name);
+    }
+  }, [selectedCity, selectedCountry]);
 
   const { register, handleSubmit, watch } = useForm<PrayerFormData>({
     defaultValues: {
