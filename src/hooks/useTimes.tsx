@@ -25,8 +25,6 @@ const useTimes = (date: any, params: any) => {
           return;
         }
 
-        console.log(`Fetching prayer times for ${city}, ${country} on ${dayjs(date).format('DD-MM-YYYY')}`);
-        
         const response = await axios.get<SingleDateDto>(url);
 
         const timings = response.data.data.timings;

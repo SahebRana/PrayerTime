@@ -79,7 +79,6 @@ const PrayerCalendar = ({
         const url = `https://api.aladhan.com/v1/calendarByCity/${currentYear}/${currentMonth}?city=${encodeURIComponent(
           city
         )}&country=${encodeURIComponent(country)}&method=2`;
-        console.log("Fetching from URL:", url);
 
         const response = await fetch(url);
 
@@ -88,7 +87,6 @@ const PrayerCalendar = ({
         }
 
         const responseData: CalendarResponse = await response.json();
-        console.log("API Response:", responseData);
 
         if (
           responseData.code === 200 &&

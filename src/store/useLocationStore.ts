@@ -246,7 +246,6 @@ export const useLocationStore = create<LocationState>((set, get) => ({
     
     for (const service of geolocationServices) {
       try {
-        console.log(`Trying IP geolocation service: ${service.name}`);
         const response = await fetch(service.url);
         
         if (!response.ok) {
@@ -277,7 +276,6 @@ export const useLocationStore = create<LocationState>((set, get) => ({
           localStorage.setItem("selectedCity", JSON.stringify(autoCity));
           localStorage.setItem("locationType", "auto");
           
-          console.log(`Successfully detected location using ${service.name}:`, { city: locationData.city, country: locationData.country_name });
           return;
         }
       } catch (error) {

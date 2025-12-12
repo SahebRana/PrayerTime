@@ -14,7 +14,6 @@ const PrayerTimeCalenderPage = () => {
   const [dayName, setDayName] = useState("Today");
   const { hijriDate } = useTimes(currentDate, { city, country });
 
-  console.log(dayName, hijriDate);
 
   const handleDateSelect = (date: Date) => {
     setCurrentDate(dayjs(date));

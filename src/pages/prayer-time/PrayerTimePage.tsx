@@ -10,21 +10,21 @@ import { useLocationStore } from "../../store/useLocationStore";
 
 const PrayerTimesPage = () => {
   const [currentDate, setCurrentDate] = useState(dayjs());
-  const { selectedCountry, selectedCity, loadSelectedLocation } = useLocationStore();
-  
+  const { selectedCountry, selectedCity, loadSelectedLocation, detectLocation } = useLocationStore();
+
   // Get city and country with localStorage -> store -> default fallback priority
   const [cityName, setCityName] = useState<string>("");
   const [countryName, setCountryName] = useState<string>("");
-  
+
   // Initialize city and country from localStorage or store or defaults
   useEffect(() => {
     // First try to get from localStorage directly
     const storedCity = localStorage.getItem("selectedCity");
     const storedCountry = localStorage.getItem("selectedCountry");
-    
+
     let cityValue = "";
     let countryValue = "";
-    
+
     // Parse from localStorage if available
     if (storedCity) {
       try {
@@ -34,7 +34,7 @@ const PrayerTimesPage = () => {
         console.error("Error parsing stored city:", e);
       }
     }
-    
+
     if (storedCountry) {
       try {
         const countryData = JSON.parse(storedCountry);
@@ -43,20 +43,20 @@ const PrayerTimesPage = () => {
         console.error("Error parsing stored country:", e);
       }
     }
-    
+
     // If not found in localStorage, use store values
     if (!cityValue && selectedCity?.name) {
       cityValue = selectedCity.name;
     }
-    
+
     if (!countryValue && selectedCountry?.name) {
       countryValue = selectedCountry.name;
     }
-    
+
     // Default fallbacks if nothing else available
-    setCityName(cityValue || "Kushtia");
+    setCityName(cityValue || "Dhaka");
     setCountryName(countryValue || "Bangladesh");
-    
+
   }, [selectedCity, selectedCountry]);
 
   const [dayName, setDayName] = useState("");
@@ -92,7 +92,6 @@ const PrayerTimesPage = () => {
   }, [completedPrayers, notifications]);
 
   const onSubmit = (data: PrayerFormData) => {
-    console.log("Form submitted:", data);
   };
 
   const addDay = () => {
