@@ -75,6 +75,7 @@ const PrayerTimesPage = () => {
   }, [completedPrayers, notifications]);
 
   const onSubmit = (data: PrayerFormData) => {
+    console.log("🚀 ~ onSubmit ~ data:", data)
   };
 
   const addDay = () => {
