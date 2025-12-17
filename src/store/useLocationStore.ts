@@ -105,11 +105,11 @@ export const useLocationStore = create<LocationState>((set, get) => ({
       // Format the cities as expected by the application
       const cities = citiesList.map(
         (city) =>
-          ({
-            name: city.name,
-            country: countryName,
-            prototype: {}, // Add the required prototype property
-          } as AppCity)
+        ({
+          name: city.name,
+          country: countryName,
+          prototype: {}, // Add the required prototype property
+        } as AppCity)
       );
 
       set({
@@ -145,15 +145,15 @@ export const useLocationStore = create<LocationState>((set, get) => ({
 
   setSelectedCountry: (country) => {
     const currentCity = get().selectedCity;
-    
+
     // Only clear city if the country actually changed
     const isCountryChanged = get().selectedCountry?.code !== country.code;
-    
-    set({ 
-      selectedCountry: country, 
-      selectedCity: isCountryChanged ? null : currentCity 
+
+    set({
+      selectedCountry: country,
+      selectedCity: isCountryChanged ? null : currentCity
     });
-    
+
     // Only fetch cities and clear localStorage if country changed
     if (isCountryChanged) {
       get().fetchCities(country.name);
@@ -162,16 +162,18 @@ export const useLocationStore = create<LocationState>((set, get) => ({
 
     // Always save the selected country
     localStorage.setItem("selectedCountry", JSON.stringify(country));
+    localStorage.setItem("country", country.code);
   },
 
   setSelectedCity: (city) => {
     set({ selectedCity: city });
-    
+
     // Save to localStorage
     if (city && city.name) {
       localStorage.setItem("selectedCity", JSON.stringify(city));
+      localStorage.setItem("city", city.name);
     } else {
-      localStorage.removeItem("selectedCity");
+      // localStorage.removeItem("selectedCity");
     }
   },
 
@@ -212,18 +214,9 @@ export const useLocationStore = create<LocationState>((set, get) => ({
 
   detectLocation: async () => {
     set({ isDetectingLocation: true });
-    
+
     // Multiple IP geolocation services with fallbacks
     const geolocationServices = [
-      {
-        name: 'ipapi.co',
-        url: 'https://ipapi.co/json/',
-        parseResponse: (data: any) => ({
-          city: data.city,
-          country_name: data.country_name,
-          country_code: data.country_code || data.country
-        })
-      },
       {
         name: 'ipinfo.io',
         url: 'https://ipinfo.io/json',
@@ -231,6 +224,15 @@ export const useLocationStore = create<LocationState>((set, get) => ({
           city: data.city,
           country_name: data.country,
           country_code: data.country
+        })
+      },
+      {
+        name: 'ipapi.co',
+        url: 'https://ipapi.co/json/',
+        parseResponse: (data: any) => ({
+          city: data.city,
+          country_name: data.country_name,
+          country_code: data.country_code || data.country
         })
       },
       {
@@ -243,49 +245,53 @@ export const useLocationStore = create<LocationState>((set, get) => ({
         })
       }
     ];
-    
+
     for (const service of geolocationServices) {
       try {
-        console.log(`Trying IP geolocation service: ${service.name}`);
         const response = await fetch(service.url);
-        
+
         if (!response.ok) {
-          throw new Error(`HTTP ${response.status}`);
+          // throw new Error(`HTTP ${response.status}`);
+          continue;
         }
-        
+
         const data = await response.json();
         const locationData = service.parseResponse(data);
-        
+
         if (locationData.city && locationData.country_name) {
-          const autoCountry = { 
-            name: locationData.country_name, 
-            code: locationData.country_code || locationData.country_name.substring(0, 2).toUpperCase() 
+          const autoCountry = {
+            name: locationData.country_name,
+            code: locationData.country_code || locationData.country_name.substring(0, 2).toUpperCase()
           };
-          const autoCity = { 
-            name: locationData.city, 
-            country: locationData.country_name, 
-            prototype: "" 
+          const autoCity = {
+            name: locationData.city,
+            country: locationData.country_name,
+            prototype: ""
           };
-          
-          set({ 
-            selectedCountry: autoCountry, 
+
+          set({
+            selectedCountry: autoCountry,
             selectedCity: autoCity,
-            isDetectingLocation: false 
+            isDetectingLocation: false
           });
-          
+
           localStorage.setItem("selectedCountry", JSON.stringify(autoCountry));
           localStorage.setItem("selectedCity", JSON.stringify(autoCity));
-          localStorage.setItem("locationType", "auto");
-          
-          console.log(`Successfully detected location using ${service.name}:`, { city: locationData.city, country: locationData.country_name });
-          return;
+
+          localStorage.setItem("city", autoCity.name);
+          localStorage.setItem("country", autoCountry.code);
+
+          return {
+            city: autoCity.name,
+            country: autoCountry.code
+          };
         }
       } catch (error) {
         console.warn(`Failed to get location from ${service.name}:`, error);
         continue;
       }
     }
-    
+
     // If all services failed
     set({ isDetectingLocation: false });
     throw new Error("Unable to detect location from any IP geolocation service");
@@ -293,38 +299,44 @@ export const useLocationStore = create<LocationState>((set, get) => ({
 
   requestLocationAccess: async () => {
     set({ isDetectingLocation: true });
-    
+
     return new Promise((resolve, reject) => {
       if (!navigator.geolocation) {
         set({ isDetectingLocation: false });
         reject(new Error("Geolocation is not supported by this browser"));
         return;
       }
-      
+
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           try {
             const { latitude, longitude } = position.coords;
-            
+
             const response = await fetch(
               `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
             );
             const data = await response.json();
-            
+
             if (data.city && data.countryName) {
               const geoCountry = { name: data.countryName, code: data.countryCode || "" };
               const geoCity = { name: data.city, country: data.countryName, prototype: "" };
-              
-              set({ 
-                selectedCountry: geoCountry, 
+
+              set({
+                selectedCountry: geoCountry,
                 selectedCity: geoCity,
-                isDetectingLocation: false 
+                isDetectingLocation: false
               });
-              
+
               localStorage.setItem("selectedCountry", JSON.stringify(geoCountry));
               localStorage.setItem("selectedCity", JSON.stringify(geoCity));
+              localStorage.setItem("city", geoCity.name);
+              localStorage.setItem("country", geoCountry.code);
               localStorage.setItem("locationType", "giveAccess");
-              resolve(undefined);
+              localStorage.setItem("latitude", latitude.toString());
+              localStorage.setItem("longitude", longitude.toString());
+
+
+              resolve({ latitude, longitude, city: geoCity.name, country: geoCountry.code });
             } else {
               throw new Error("Unable to get location name");
             }
@@ -337,7 +349,7 @@ export const useLocationStore = create<LocationState>((set, get) => ({
         (error) => {
           console.error("Error getting location:", error);
           set({ isDetectingLocation: false });
-          
+
           // Create user-friendly error message based on error code
           let userMessage = "Unable to access location";
           switch (error.code) {
@@ -353,7 +365,7 @@ export const useLocationStore = create<LocationState>((set, get) => ({
             default:
               userMessage = `Location access failed: ${error.message}`;
           }
-          
+
           const enhancedError = new Error(userMessage) as Error & { code: number };
           enhancedError.code = error.code;
           reject(enhancedError);

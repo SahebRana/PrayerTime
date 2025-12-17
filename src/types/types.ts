@@ -51,6 +51,6 @@ export interface LocationState {
   setSelectedCountry: (country: Country) => void;
   setSelectedCity: (city: City) => void;
   loadSelectedLocation: () => void;
-  detectLocation: () => Promise<void>;
-  requestLocationAccess: () => Promise<void>;
+  detectLocation: () => Promise<{ city: string, country: string }>;
+  requestLocationAccess: () => Promise<{ latitude?: number, longitude?: number, city?: string, country?: string }>;
 }

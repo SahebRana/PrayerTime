@@ -133,9 +133,8 @@ export const LocationSettingsDrawer = ({
 
       {/* Drawer */}
       <div
-        className={`fixed top-0 right-0 bottom-0 z-[2000] transition-all duration-300 ease-in-out ${
-          isOpen ? "w-80" : "w-0 opacity-0"
-        }`}
+        className={`fixed top-0 right-0 bottom-0 z-[2000] transition-all duration-300 ease-in-out ${isOpen ? "w-80" : "w-0 opacity-0"
+          }`}
       >
         <div className="h-full bg-primary w-80 overflow-hidden flex flex-col">
           <div className="p-4 bg-primary flex items-center border-b border-border-color">
@@ -180,6 +179,7 @@ export const LocationSettingsDrawer = ({
                     setLocationType("auto");
                     try {
                       await detectLocation();
+                      localStorage.setItem("locationType", "auto");
                     } catch (error) {
                       setLocationError("Failed to detect location automatically. Please try manual selection.");
                     }
