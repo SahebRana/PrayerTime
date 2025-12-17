@@ -13,58 +13,33 @@ const PrayerTimesPage = () => {
   const { selectedCountry, selectedCity, loadSelectedLocation, detectLocation } = useLocationStore();
 
   // Get city and country with localStorage -> store -> auto -> default fallback priority
-  const [cityName, setCityName] = useState<string>("");
-  const [countryName, setCountryName] = useState<string>("");
-
-  // Initialize city and country from localStorage or store or defaults
-  useEffect(() => {
-    // First try to get from localStorage directly
-    const storedCity = localStorage.getItem("selectedCity");
-    const storedCountry = localStorage.getItem("selectedCountry");
-
-    let cityValue = "";
-    let countryValue = "";
-
-    // Parse from localStorage if available
-    if (storedCity) {
-      try {
-        const cityData = JSON.parse(storedCity);
-        cityValue = cityData.name;
-      } catch (e) {
-        console.error("Error parsing stored city:", e);
-      }
-    }
-
-    if (storedCountry) {
-      try {
-        const countryData = JSON.parse(storedCountry);
-        countryValue = countryData.name;
-      } catch (e) {
-        console.error("Error parsing stored country:", e);
-      }
-    }
-
-    // If not found in localStorage, use store values
-    if ((!cityValue) || (!countryValue)) {
-      detectLocation().then(data => {
-        console.log(data);
-        setCityName(data.selectedCity.name || "Dhaka");
-        setCountryName(data.selectedCountry.name || "Bangladesh");
-      });
-    }
-    else {
-      // Default fallbacks if nothing else available
-      setCityName(cityValue || "Dhaka");
-      setCountryName(countryValue || "Bangladesh");
-    }
-  }, []);
-
+  const [cityName, setCityName] = useState<string>(localStorage.getItem("city") || 'dhaka');
+  const [countryName, setCountryName] = useState<string>(localStorage.getItem("country") || 'bd');
   const [dayName, setDayName] = useState("");
-
   const { prayerTimes, hijriDate, loading } = useTimes(currentDate, {
     city: cityName,
     country: countryName,
   });
+
+  // Initialize city and country from localStorage or store or defaults
+  useEffect(() => {
+    // First try to get from localStorage directly
+    const city = localStorage.getItem("city");
+    const country = localStorage.getItem("country");
+
+    // If not found in localStorage, use store values
+    if ((!city) || (!country)) {
+      detectLocation().then(data => {
+        setCityName(data.city || "dhaka");
+        setCountryName(data.country || "bd");
+      });
+    }
+    else {
+      // Default fallbacks if nothing else available
+      setCityName(city || "dhaka");
+      setCountryName(country || "bd");
+    }
+  }, []);
 
   // Load the selected location when the component mounts
   useEffect(() => {

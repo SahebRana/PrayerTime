@@ -162,6 +162,7 @@ export const useLocationStore = create<LocationState>((set, get) => ({
 
     // Always save the selected country
     localStorage.setItem("selectedCountry", JSON.stringify(country));
+    localStorage.setItem("country", country.code);
   },
 
   setSelectedCity: (city) => {
@@ -170,8 +171,9 @@ export const useLocationStore = create<LocationState>((set, get) => ({
     // Save to localStorage
     if (city && city.name) {
       localStorage.setItem("selectedCity", JSON.stringify(city));
+      localStorage.setItem("city", city.name);
     } else {
-      localStorage.removeItem("selectedCity");
+      // localStorage.removeItem("selectedCity");
     }
   },
 
@@ -276,9 +278,12 @@ export const useLocationStore = create<LocationState>((set, get) => ({
           localStorage.setItem("selectedCountry", JSON.stringify(autoCountry));
           localStorage.setItem("selectedCity", JSON.stringify(autoCity));
 
+          localStorage.setItem("city", autoCity.name);
+          localStorage.setItem("country", autoCountry.code);
+
           return {
-            selectedCountry: autoCountry,
-            selectedCity: autoCity
+            city: autoCity.name,
+            country: autoCountry.code
           };
         }
       } catch (error) {
@@ -324,8 +329,14 @@ export const useLocationStore = create<LocationState>((set, get) => ({
 
               localStorage.setItem("selectedCountry", JSON.stringify(geoCountry));
               localStorage.setItem("selectedCity", JSON.stringify(geoCity));
+              localStorage.setItem("city", geoCity.name);
+              localStorage.setItem("country", geoCountry.code);
               localStorage.setItem("locationType", "giveAccess");
-              resolve(undefined);
+              localStorage.setItem("latitude", latitude.toString());
+              localStorage.setItem("longitude", longitude.toString());
+
+
+              resolve({ latitude, longitude, city: geoCity.name, country: geoCountry.code });
             } else {
               throw new Error("Unable to get location name");
             }
